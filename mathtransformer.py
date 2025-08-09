@@ -13,32 +13,19 @@ generator = pipeline("text-generation", model="mistralai/Mistral-7B-Instruct-v0.
 def parse_equation_description(prompt):
 
     instruction = (
-        "Read the following instruction and return Python code using sympy that defines and solves the equations:\n"
+        "Read the following instruction regarding a math equation and return a structurized json describing the equation:\n"
         f"{prompt}\n"
-        "Only return the Python code, without explanation."
+        "Only return the equation's json. No explanation."
     )
 
-    result = generator(instruction, max_new_tokens=200)[0]["generated_text"]
+    result = generator(instruction, max_new_tokens=300)[0]["generated_text"]
 
-    code_match = re.search(r"```python\n(.*?)```", result, re.DOTALL)
 
-    if code_match:
-        code = code_match.group(1)
-    else:
-        code = result.split("```")[-1]
+    return result
 
-    return code
-
-def execute_sympy_code(code):
-    local_vars = {}
-    exec(code, {"symbols": symbols, "Eq": Eq, "solve": solve}, local_vars)
-
-    return local_vars
 
 
 prompt = "Nina has one apple. John has one apple more than Nina. How many apples does John have?"
-code = parse_equation_description(prompt)
-print("Generated code:\n", code)
+result = parse_equation_description(prompt)
+print("Generated json:\n", result)
 
-result_vars = execute_sympy_code(code)
-print("Result:\n", result_vars)
