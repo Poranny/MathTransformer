@@ -58,38 +58,3 @@ def solve_equations (equations, symbols) :
     solution = solve(equation_set, symbols, dict=True)
 
     return solution
-
-def parse_response (response) :
-    from parse_helpers import result_parser, explicit_multiply_parser, is_safe_equation
-
-    parsed_answer = result_parser(response)
-
-    if parsed_answer == 'NOTMATH_WARNING':
-        raise Exception('The prompt was detected not to be a math equation.')
-    elif parsed_answer == 'INEQUAL_WARNING':
-        raise Exception('The prompt was detected to be an inequality.')
-
-    equations = []
-    for eq in parsed_answer:
-        equations.append(explicit_multiply_parser(eq))
-
-    for eq in equations:
-        if not is_safe_equation(eq):
-            raise Exception(f"The equation {eq} is not safe.")
-
-    return equations
-
-def get_symbols (equations) :
-    import re
-    from sympy import symbols
-
-    symbol_names = set()
-
-    for eq in equations:
-        matches = re.findall(r"[A-Za-z]+", eq)
-        symbol_names.update(matches)
-
-
-    sympy_symbols = symbols(" ".join(symbol_names))
-
-    return sympy_symbols
