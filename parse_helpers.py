@@ -45,6 +45,22 @@ def is_safe_equation(s: str) -> bool:
     return bal == 0
 
 
+def get_symbols (equations) :
+    import re
+    from sympy import symbols
+
+    symbol_names = set()
+
+    for eq in equations:
+        matches = re.findall(r"[A-Za-z]+", eq)
+        symbol_names.update(matches)
+
+
+    sympy_symbols = symbols(" ".join(symbol_names))
+
+    return sympy_symbols
+
+
 def parse_response (response) :
 
     parsed_answer = result_parser(response)
@@ -63,19 +79,3 @@ def parse_response (response) :
             raise Exception(f"The equation {eq} is not safe.")
 
     return equations
-
-
-def get_symbols (equations) :
-    import re
-    from sympy import symbols
-
-    symbol_names = set()
-
-    for eq in equations:
-        matches = re.findall(r"[A-Za-z]+", eq)
-        symbol_names.update(matches)
-
-
-    sympy_symbols = symbols(" ".join(symbol_names))
-
-    return sympy_symbols
