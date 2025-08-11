@@ -14,8 +14,6 @@ def result_parser (result) :
     return answers_cleared
 
 def explicit_multiply_parser (equation) :
-    import re
-
     pattern = r'([0-9])\s*([A-Za-z])|([A-Za-z])\s*([0-9])'
 
     def insert_multiply(match):
@@ -46,7 +44,6 @@ def is_safe_equation(s: str) -> bool:
 
 
 def get_symbols (equations) :
-    import re
     from sympy import symbols
 
     symbol_names = set()
@@ -62,7 +59,6 @@ def get_symbols (equations) :
 
 
 def parse_response (response) :
-
     parsed_answer = result_parser(response)
 
     if parsed_answer == 'NOTMATH_WARNING':
