@@ -1,13 +1,15 @@
 import re
 
-def result_parser (result) :
-    answer = result[0]["generated_text"] [-1] ['content']
+def result_parser (result):
+    answer = result[0]["generated_text"][-1]['content']
 
     answers = answer.split(', ')
     answers_cleared = []
 
-    for elem in answers :
-        elem_clr = elem.replace("'", "")
+    for elem in answers:
+        # removing redundant spaces
+        elem_clr = ' '.join(elem.strip().split())
+        elem_clr = elem_clr.replace("'", "")
 
         answers_cleared.append(elem_clr)
 
@@ -55,6 +57,8 @@ def get_symbols (equations) :
 
     sympy_symbols = symbols(" ".join(symbol_names))
 
+    sympy_symbols = sorted(sympy_symbols, key=lambda x: str(x))  # Porównanie przez str()
+
     return sympy_symbols
 
 
@@ -75,3 +79,25 @@ def parse_response (response) :
             raise Exception(f"The equation {eq} is not safe.")
 
     return equations
+
+
+def present_solution (solution):
+    from sympy import N
+    sol_result = 'Result: \n'
+
+    for symbol, value in solution[0].items():
+        sol_result += str(symbol) + ', ' + str(round(N(value), 5)).rstrip('0').rstrip('.')
+        sol_result += '\n'
+    return sol_result
+
+def present_equations (equations) :
+    eqs_presented = "Equations found: \n"
+    for equation in equations :
+        eqs_presented += equation + "\n"
+    return eqs_presented
+
+def present_symbols(symbols):
+    syms_presented = "Symbols found: \n"
+    for symbol in symbols:
+        syms_presented += str(symbol) + "\n"
+    return syms_presented
