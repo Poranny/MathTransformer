@@ -54,10 +54,12 @@ def get_symbols (equations) :
         matches = re.findall(r"[A-Za-z]+", eq)
         symbol_names.update(matches)
 
+    symbol_names = sorted(list(symbol_names))
 
     sympy_symbols = symbols(" ".join(symbol_names))
 
-    sympy_symbols = sorted(sympy_symbols, key=lambda x: str(x))  # Porównanie przez str()
+    if len(sympy_symbols) == 1:
+        sympy_symbols = [sympy_symbols]
 
     return sympy_symbols
 
@@ -86,7 +88,7 @@ def present_solution (solution):
     sol_result = 'Result: \n'
 
     for symbol, value in solution[0].items():
-        sol_result += str(symbol) + ', ' + str(round(N(value), 5)).rstrip('0').rstrip('.')
+        sol_result += str(symbol) + ' = ' + str(round(N(value), 5)).rstrip('0').rstrip('.')
         sol_result += '\n'
     return sol_result
 
