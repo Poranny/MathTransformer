@@ -41,6 +41,24 @@ def setup_prompt (prompt : str) :
 
     return query
 
+def solve_equations (equations, symbols) :
+    from sympy import sympify, Eq
+
+    equation_set = []
+
+    for eq in equations:
+        left, right = eq.split('=')
+
+        equation_set.append(
+            Eq(sympify(left), sympify(right))
+        )
+
+    from sympy import solve
+
+    solution = solve(equation_set, symbols, dict=True)
+
+    return solution
+
 def parse_response (response) :
     from parse_helpers import result_parser, explicit_multiply_parser, is_safe_equation
 
