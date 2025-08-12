@@ -10,11 +10,7 @@ from fastapi import FastAPI, Depends, HTTPException, Request
 @asynccontextmanager
 async def lifespan (app: FastAPI) :
     try:
-        token = load_token()
-    except Exception:
-        raise RuntimeError("There was an error loading the model. Please try again later.")
-    try:
-        app.state.generator = setup_generator(token)
+        app.state.generator = setup_generator()
     except Exception:
         raise RuntimeError("There was an error setting the generator. Please try again later.")
 

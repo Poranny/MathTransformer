@@ -1,4 +1,4 @@
-def setup_generator(token: str | None = None):
+def setup_generator():
     from transformers import pipeline
     return pipeline(
         "text-generation",

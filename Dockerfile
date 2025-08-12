@@ -1,24 +1,14 @@
-# syntax=docker/dockerfile:1.6
-FROM python:3.11-slim
-
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
-    HF_HUB_ENABLE_HF_TRANSFER=1
+FROM my-mistral-base:latest
 
 WORKDIR /app
 
 COPY requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
-
-COPY app/model_download.py .
-
-RUN --mount=type=secret,id=env_file,target=/run/secrets/env_file \
-    python model_download.py
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --no-cache-dir -r requirements.txt
 
 COPY app ./app
 
-RUN useradd -m appuser && mkdir -p /models && chown -R appuser:appuser /app /models
+RUN useradd -m appuser
 USER appuser
 
 EXPOSE 8000
