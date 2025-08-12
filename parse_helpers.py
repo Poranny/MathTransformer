@@ -85,7 +85,7 @@ def parse_response (response) :
 
 def present_solution (solution):
     from sympy import N
-    sol_result = 'Result: \n'
+    sol_result = ''
 
     for symbol, value in solution[0].items():
         sol_result += str(symbol) + ' = ' + str(round(N(value), 5)).rstrip('0').rstrip('.')
@@ -93,13 +93,13 @@ def present_solution (solution):
     return sol_result
 
 def present_equations (equations) :
-    eqs_presented = "Equations found: \n"
+    eqs_presented = ''
     for equation in equations :
         eqs_presented += equation + "\n"
     return eqs_presented
 
 def present_symbols(symbols):
-    syms_presented = "Symbols found: \n"
+    syms_presented = ''
     for symbol in symbols:
         syms_presented += str(symbol) + "\n"
     return syms_presented

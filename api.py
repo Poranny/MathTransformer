@@ -1,3 +1,5 @@
+from pip._internal import req
+
 from math_transformer import setup_generator, setup_prompt, solve_equations
 from parse_helpers import parse_response, get_symbols, present_solution, present_symbols, present_equations
 from misc import load_token
@@ -29,7 +31,7 @@ def get_generator (req : Request) :
     return gen
 
 @app.post("/answer", response_model=SolveAnswer)
-def answer(data : SolveRequest, generator) :
+def answer(data : SolveRequest, generator=Depends(get_generator)) :
 
     try :
         ready_prompt = setup_prompt(data.prompt)
