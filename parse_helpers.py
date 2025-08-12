@@ -46,7 +46,7 @@ def is_safe_equation(s: str) -> bool:
 
 
 def get_symbols (equations) :
-    from sympy import symbols
+    from sympy import symbols, Symbol
 
     symbol_names = set()
 
@@ -58,8 +58,13 @@ def get_symbols (equations) :
 
     sympy_symbols = symbols(" ".join(symbol_names))
 
-    if not isinstance(sympy_symbols, list):
+    try:
+        iter(sympy_symbols)
+    except TypeError:
         sympy_symbols = [sympy_symbols]
+    else:
+        if isinstance(sympy_symbols, str) or isinstance(sympy_symbols, Symbol):
+            sympy_symbols = [sympy_symbols]
 
     return sympy_symbols
 
@@ -73,7 +78,7 @@ def parse_response (response) :
         raise Exception('The prompt was detected to be an inequality.')
 
     parsed_answer = result_parser(answer)
-
+    print(parsed_answer)
 
     equations = []
     for eq in parsed_answer:
