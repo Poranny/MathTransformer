@@ -78,7 +78,6 @@ def parse_response (response) :
         raise Exception('The prompt was detected to be an inequality.')
 
     parsed_answer = result_parser(answer)
-    print(parsed_answer)
 
     equations = []
     for eq in parsed_answer:
