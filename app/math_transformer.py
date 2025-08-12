@@ -1,8 +1,10 @@
-def setup_generator (token : str) :
+def setup_generator(token: str | None = None):
     from transformers import pipeline
-
-    generator = pipeline("text-generation", model="mistralai/Mistral-7B-Instruct-v0.3", token=token, temperature=0.001)
-    return generator
+    return pipeline(
+        "text-generation",
+        model="/models/mistral",
+        temperature=0.001
+    )
 
 def setup_prompt (prompt : str) :
     instruction = [

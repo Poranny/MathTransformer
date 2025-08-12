@@ -1,0 +1,19 @@
+version: "3.11"
+
+services:
+  api:
+    build:
+      dockerfile: Dockerfile
+      secrets:
+        - source: env_file
+          target: env_file
+    image: my-mistral:latest
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    restart: unless-stopped
+
+secrets:
+  env_file:
+    file: .env
