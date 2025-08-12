@@ -1,4 +1,6 @@
-dotenv
-transformers
-sympy
-fastapi
+dotenv~=0.9.9
+transformers~=4.55.0
+sympy~=1.14.0
+fastapi~=0.116.1
+pydantic~=2.11.7
+python-dotenv~=1.1.1
