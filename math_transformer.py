@@ -30,6 +30,9 @@ def setup_prompt (prompt : str) :
          "content": "This is the equation described in a natural language:\n<<<\ntwo a minus twentyone equals b. and c squared equals b as well. c=2a\n>>>"},
         {"role": "assistant", "content": "'2 * a - 21 = b', 'c ** 2 = b', c = 2 * a"},
         {"role": "user",
+         "content": "This is the equation described in a natural language:\n<<<\nx is 1. var b is 20-x.\n>>>"},
+        {"role": "assistant", "content": "'x = 1', 'b = 20 - x'"},
+        {"role": "user",
          "content": "This is the equation described in a natural language:\n<<<\n2x minus five equals zero\n>>>"},
         {"role": "assistant", "content": "'2 * x - 5 = 0'"},
         {"role": "user", "content":
