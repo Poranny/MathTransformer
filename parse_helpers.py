@@ -83,23 +83,23 @@ def parse_response (response) :
     return equations
 
 
-def present_solution (solution):
+def format_solution (solution):
     from sympy import N
-    sol_result = ''
+    sol_formatted = ''
 
     for symbol, value in solution[0].items():
-        sol_result += str(symbol) + ' = ' + str(round(N(value), 5)).rstrip('0').rstrip('.')
-        sol_result += '\n'
-    return sol_result
+        sol_formatted += str(symbol) + ' = ' + str(round(N(value), 5)).rstrip('0').rstrip('.')
+        sol_formatted += '|'
+    return sol_formatted
 
-def present_equations (equations) :
-    eqs_presented = ''
+def format_equations (equations) :
+    eqs_formatted = ''
     for equation in equations :
-        eqs_presented += equation + "\n"
-    return eqs_presented
+        eqs_formatted += equation + "|"
+    return eqs_formatted
 
-def present_symbols(symbols):
-    syms_presented = ''
+def format_symbols(symbols):
+    syms_formatted = ''
     for symbol in symbols:
-        syms_presented += str(symbol) + "\n"
-    return syms_presented
+        syms_formatted += str(symbol) + "|"
+    return syms_formatted
