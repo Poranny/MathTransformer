@@ -1,6 +1,5 @@
 import os
 
-
 def load_token() :
     from dotenv import load_dotenv
 

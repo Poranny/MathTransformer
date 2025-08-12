@@ -1,10 +1,10 @@
-from math_transformer import setup_generator, setup_prompt, solve_equations
-from parse_helpers import parse_response, get_symbols, solution_to_json, symbols_to_json, equations_to_json
-from misc import load_token
+from app.math_transformer import setup_generator, setup_prompt, solve_equations
+from app.parse_helpers import parse_response, get_symbols, solution_to_json, symbols_to_json, equations_to_json
+from app.misc import load_token
+from app.schemes import SolveRequest, SolveAnswer
+
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException, Request
-
-from schemes import SolveRequest, SolveAnswer
 
 
 @asynccontextmanager
