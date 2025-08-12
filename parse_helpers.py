@@ -1,7 +1,7 @@
 import re
 
-def result_parser (result):
-    answer = result[0]["generated_text"][-1]['content']
+
+def result_parser (answer):
 
     answers = answer.split(', ')
     answers_cleared = []
@@ -58,19 +58,22 @@ def get_symbols (equations) :
 
     sympy_symbols = symbols(" ".join(symbol_names))
 
-    if len(sympy_symbols) == 1:
+    if not isinstance(sympy_symbols, list):
         sympy_symbols = [sympy_symbols]
 
     return sympy_symbols
 
 
 def parse_response (response) :
-    parsed_answer = result_parser(response)
+    answer = response[0]["generated_text"][-1]['content']
 
-    if parsed_answer == 'NOTMATH_WARNING':
+    if 'NOTMATH_WARNING' in answer:
         raise Exception('The prompt was detected not to be a math equation.')
-    elif parsed_answer == 'INEQUAL_WARNING':
+    elif 'INEQUAL_WARNING' in answer:
         raise Exception('The prompt was detected to be an inequality.')
+
+    parsed_answer = result_parser(answer)
+
 
     equations = []
     for eq in parsed_answer:
@@ -83,23 +86,16 @@ def parse_response (response) :
     return equations
 
 
-def format_solution (solution):
+def solution_to_json(solution):
     from sympy import N
-    sol_formatted = ''
 
-    for symbol, value in solution[0].items():
-        sol_formatted += str(symbol) + ' = ' + str(round(N(value), 5)).rstrip('0').rstrip('.')
-        sol_formatted += '|'
-    return sol_formatted
+    return {
+        str(symbol): float(round(N(value), 5))
+        for symbol, value in solution[0].items()
+    }
 
-def format_equations (equations) :
-    eqs_formatted = ''
-    for equation in equations :
-        eqs_formatted += equation + "|"
-    return eqs_formatted
+def equations_to_json(equations):
+    return list(equations)
 
-def format_symbols(symbols):
-    syms_formatted = ''
-    for symbol in symbols:
-        syms_formatted += str(symbol) + "|"
-    return syms_formatted
+def symbols_to_json(symbols):
+    return [str(symbol) for symbol in symbols]
