@@ -1,8 +1,10 @@
-transformers==4.43.3
-huggingface-hub==0.24.5
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.3.1+cpu
+
+transformers
+huggingface-hub
 accelerate
 huggingface-hub
-hf_transfer
 protobuf
 sentencepiece
-dotenv~=0.9.9
+dotenv
