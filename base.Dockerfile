@@ -15,3 +15,5 @@ COPY download_gguf.py .
 RUN --mount=type=secret,id=env_file,target=/run/secrets/env_file \
     --mount=type=cache,target=/root/.cache/huggingface \
     python download_gguf.py
+
+ENV MODEL_DIR=/models/mistral-gguf MODEL_FILE=model.gguf
