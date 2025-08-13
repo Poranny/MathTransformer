@@ -5,3 +5,4 @@ huggingface-hub
 hf_transfer
 protobuf
 sentencepiece
+dotenv~=0.9.9
