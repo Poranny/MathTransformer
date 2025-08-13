@@ -2,16 +2,19 @@ import os, glob
 from ctransformers import AutoModelForCausalLM
 
 def setup_generator():
-    model_dir = os.getenv("MODEL_DIR", "/models/mistral-gguf")
-    quant = os.getenv("QUANT", "Q3_K_M")
+    model_dir = os.getenv("MODEL_DIR")
     model_file = os.getenv("MODEL_FILE")
+    quant = os.getenv("MODEL_QUANT")
 
     if not model_file:
-        candidates = [p for p in glob.glob(os.path.join(model_dir, f"*{quant}*.gguf"))
-                      if p.lower().endswith(f"{quant.lower()}.gguf")]
+        pattern = f"*{quant}*.gguf" if quant else "*.gguf"
+        candidates = sorted(
+            p for p in glob.glob(os.path.join(model_dir, pattern))
+            if quant is None or p.lower().endswith(f"{quant.lower()}.gguf")
+        )
         if not candidates:
             files = ", ".join(sorted(os.listdir(model_dir))) if os.path.isdir(model_dir) else "(no directory)"
-            raise FileNotFoundError(f"No GGUF file for QUANT={quant} in {model_dir}. Available: {files}")
+            raise FileNotFoundError(f"No GGUF for quant='{quant}' in {model_dir}. Available: {files}")
         model_file = os.path.basename(candidates[0])
 
     llm = AutoModelForCausalLM.from_pretrained(

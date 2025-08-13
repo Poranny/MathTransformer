@@ -12,9 +12,6 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 COPY download_gguf.py .
 
-ARG QUANT=Q3_K_M
-ENV QUANT=${QUANT}
-
 RUN --mount=type=secret,id=env_file,target=/run/secrets/env_file \
     --mount=type=cache,target=/root/.cache/huggingface \
     python download_gguf.py
