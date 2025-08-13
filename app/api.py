@@ -60,3 +60,6 @@ def answer(data : SolveRequest, generator=Depends(get_generator)) :
             equations = json_equations,
             solution = json_solution
         )
+@app.get("/healthz")
+def healthz():
+    return {"ok": True}
