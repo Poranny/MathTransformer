@@ -1,10 +1,2 @@
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.3.1+cpu
-
-transformers
-huggingface-hub
-accelerate
-huggingface-hub
-protobuf
-sentencepiece
 dotenv
+huggingface-hub

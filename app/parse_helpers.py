@@ -70,7 +70,7 @@ def get_symbols (equations) :
 
 
 def parse_response (response) :
-    answer = response[0]["generated_text"][-1]['content']
+    answer = response
 
     if 'NOTMATH_WARNING' in answer:
         raise Exception('The prompt was detected not to be a math equation.')

@@ -33,6 +33,8 @@ def answer(data : SolveRequest, generator=Depends(get_generator)) :
 
     try:
         response = generator(ready_prompt)
+        if not isinstance(response, str):
+            response = str(response)
     except Exception:
         raise HTTPException(status_code=500, detail="There was an error generating the answer. Please try again later.")
 

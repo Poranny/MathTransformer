@@ -1,14 +1,9 @@
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.3.1+cpu
-
-dotenv
-transformers
-sympy
-fastapi
-pydantic
-python-dotenv
+dotenv~=0.9.9
+sympy~=1.14.0
+fastapi~=0.116.1
+pydantic~=2.11.7
+python-dotenv~=1.1.1
 uvicorn[standard]
-accelerate
-huggingface-hub
-protobuf
-sentencepiece
+ctransformers~=0.2.27
+transformers~=4.55.0
+huggingface-hub~=0.34.4
