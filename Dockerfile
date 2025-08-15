@@ -1,18 +1,15 @@
-FROM my-mistral-base:latest
+FROM my-mistral-base-al2023:latest
 
-WORKDIR /app
+ENV PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_ONLY_BINARY=:all:
+
+WORKDIR ${LAMBDA_TASK_ROOT}
 
 COPY requirements.txt .
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install --no-cache-dir -r requirements.txt
+RUN python -m pip install --upgrade pip setuptools wheel \
+ && pip install --no-cache-dir -r requirements.txt
 
 COPY app ./app
 
-COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 /lambda-adapter /opt/extensions/lambda-adapter
-
-ENV AWS_LWA_PORT=8000 \
-    AWS_LWA_READINESS_CHECK_PATH=/healthz \
-    AWS_LWA_ENABLE_COMPRESSION=true
-
-EXPOSE 8000
-CMD ["uvicorn","app.api:app","--host","0.0.0.0","--port","8000"]
+CMD ["app.api.handler"]

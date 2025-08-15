@@ -22,11 +22,13 @@ def setup_generator():
         model_file=model_file,
         model_type="mistral",
         gpu_layers=0,
-        threads=int(os.getenv("LLM_THREADS", "4")),
-        context_length=int(os.getenv("LLM_CTX", "32768")),
+        threads=int(os.getenv("LLM_THREADS", "1")),
+        context_length=int(os.getenv("LLM_CTX", "4096")),
+        batch_size=int(os.getenv("CT_BATCH", "1")),
+        local_files_only=True,
     )
 
-    def infer(prompt: str, max_new_tokens: int = 128, temperature: float = 0.01):
+    def infer(prompt: str, max_new_tokens: int = 64, temperature: float = 0.01):
         return llm(prompt, max_new_tokens=max_new_tokens, temperature=temperature, stop=["</s>"])
 
     return infer

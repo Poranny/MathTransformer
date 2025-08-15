@@ -5,26 +5,26 @@ from app.schemes import SolveRequest, SolveAnswer
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException, Request
 
+from mangum import Mangum
 
 @asynccontextmanager
-async def lifespan (app: FastAPI) :
+async def lifespan(app: FastAPI):
     try:
         app.state.generator = setup_generator()
     except Exception:
         raise RuntimeError("There was an error setting the generator. Please try again later.")
-
     yield
 
 app = FastAPI(lifespan=lifespan)
 
-def get_generator (req : Request) :
+def get_generator(req: Request):
     gen = getattr(req.app.state, "generator", None)
     if gen is None:
         raise HTTPException(status_code=503, detail="Model not ready.")
     return gen
 
 @app.post("/answer", response_model=SolveAnswer)
-def answer(data : SolveRequest, generator=Depends(get_generator)) :
+def answer(data: SolveRequest, generator=Depends(get_generator)):
     try:
         ready_prompt = setup_prompt(data.prompt)
     except Exception:
@@ -48,18 +48,21 @@ def answer(data : SolveRequest, generator=Depends(get_generator)) :
     except Exception:
         raise HTTPException(status_code=500, detail="There was an error solving the equations. Please try again later.")
 
-    try :
+    try:
         json_symbols = symbols_to_json(symbols)
         json_equations = equations_to_json(equations)
         json_solution = solution_to_json(solution)
     except Exception:
         raise HTTPException(status_code=500, detail="There was an error parsing the responses. Please try again later.")
 
-    return SolveAnswer (
-            symbols = json_symbols,
-            equations = json_equations,
-            solution = json_solution
-        )
+    return SolveAnswer(
+        symbols=json_symbols,
+        equations=json_equations,
+        solution=json_solution,
+    )
+
 @app.get("/healthz")
 def healthz():
     return {"ok": True}
+
+handler = Mangum(app)

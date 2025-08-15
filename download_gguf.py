@@ -6,6 +6,8 @@ from huggingface_hub import hf_hub_download
 ENV_SECRET_PATH = Path("/run/secrets/env_file")
 if ENV_SECRET_PATH.exists():
     load_dotenv(ENV_SECRET_PATH, override=False)
+else :
+    load_dotenv()
 
 repo = os.getenv("MODEL_REPO")
 base = os.getenv("MODEL_BASE")
