@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Konfiguracja
 API = os.getenv("API_BASE", "http://127.0.0.1:8000")
 WELCOME_FONT = os.getenv("WELCOME_FONT", "Merriweather")
 
@@ -14,10 +13,32 @@ CONTACT_EMAIL = os.getenv("CONTACT_EMAIL", "")
 CONTACT_LINKEDIN = os.getenv("CONTACT_LINKEDIN", "")
 CONTACT_GITHUB = os.getenv("CONTACT_GITHUB", "")
 
+PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "")
+
+OG_TITLE = os.getenv("OG_TITLE", "MathTransformer")
+OG_DESC  = os.getenv("OG_DESC", "Solving math equations from natural language descriptions")
+OG_IMAGE = os.getenv("OG_IMAGE", f"{PUBLIC_BASE_URL}/og-image.png")
+
+HEAD_HTML = f"""
+<link rel="icon" href="/og-image.png" type="image/png" sizes="32x32">
+
+<meta property="og:title" content="{OG_TITLE}">
+<meta property="og:description" content="{OG_DESC}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{PUBLIC_BASE_URL}">
+<meta property="og:image" content="{OG_IMAGE}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{OG_TITLE}">
+<meta name="twitter:description" content="{OG_DESC}">
+<meta name="twitter:image" content="{OG_IMAGE}">
+"""
+
 HERE = Path(__file__).resolve().parent
 
 def _read_and_fill(path: Path, mapping: dict) -> str:
-    """Wczytaj plik i podmień placeholdery w formacie __PLACEHOLDER__."""
     text = path.read_text(encoding="utf-8")
     for k, v in mapping.items():
         text = text.replace(f"__{k}__", v)
@@ -33,7 +54,6 @@ def ask(prompt: str):
     except Exception as e:
         return {"error": str(e)}
 
-# Wczytaj zewnętrzny JS i CSS (zastępując placeholdery)
 placeholders = {
     "CONTACT_EMAIL": CONTACT_EMAIL,
     "CONTACT_LINKEDIN": CONTACT_LINKEDIN,
@@ -52,7 +72,8 @@ with gr.Blocks(
     ),
     title="MathTransformer",
     js=js_code,
-    css=css_code
+    css=css_code,
+    head=HEAD_HTML
 ) as demo:
     with gr.Column(elem_id="centerer", elem_classes=["col-gap"]):
         inp = gr.Textbox(
