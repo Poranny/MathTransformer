@@ -75,13 +75,6 @@ for cand in CANDIDATES:
 if not LOGO_DATA_URL:
     LOGO_DATA_URL = OG_IMAGE
 
-EXTRA_CSS = """
-#mt_logo_wrap{position:fixed;top:12px;left:24px;z-index:70;}
-#mt_logo_btn{display:inline-block;line-height:0;border:0;background:transparent;padding:0;cursor:pointer}
-#mt_logo_btn img{height:80px;width:auto;display:block}
-
-@media (max-width:768px){#mt_logo_wrap{display:none}}
-"""
 
 placeholders = {
     "CONTACT_EMAIL": CONTACT_EMAIL,
@@ -91,7 +84,7 @@ placeholders = {
 }
 
 js_code = _read_and_fill(HERE / "app.js", placeholders)
-css_code = _read_and_fill(HERE / "styles.css", placeholders) + EXTRA_CSS
+css_code = _read_and_fill(HERE / "styles.css", placeholders)
 
 with gr.Blocks(
     theme=gr.themes.Citrus(

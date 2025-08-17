@@ -57,7 +57,7 @@ code, pre, kbd, samp,
 }
 
 #centerer {
-  min-height: calc(70vh - var(--hero-h));
+  min-height: calc(60vh - var(--hero-h));
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -213,3 +213,8 @@ footer, footer * { display: none !important; }
 }
 
 .contact-dim .gradio-container{ filter: none; }
+#mt_logo_wrap{position:fixed;top:12px;left:24px;z-index:70;}
+#mt_logo_btn{display:inline-block;line-height:0;border:0;background:transparent;padding:0;cursor:pointer}
+#mt_logo_btn img{height:80px;width:auto;display:block}
+
+@media (max-width:768px){#mt_logo_wrap{display:none}}
