@@ -23,17 +23,6 @@ OG_IMAGE = os.getenv("OG_IMAGE", "https://mathtransformer.app/og-image.png")
 
 HEAD_HTML = f"""
 <link rel="icon" href="/og-image.png" type="image/png" sizes="32x32">
-<meta property="og:title" content="{OG_TITLE}">
-<meta property="og:description" content="{OG_DESC}">
-<meta property="og:type" content="website">
-<meta property="og:url" content="{PUBLIC_BASE_URL}">
-<meta property="og:image" content="{OG_IMAGE}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{OG_TITLE}">
-<meta name="twitter:description" content="{OG_DESC}">
-<meta name="twitter:image" content="{OG_IMAGE}">
 """
 
 def _read_and_fill(path: Path, mapping: dict) -> str:
