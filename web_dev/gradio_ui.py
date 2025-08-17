@@ -24,7 +24,7 @@ function refresh() {
     var container = document.createElement('div');
     container.id = 'gradio-animation';
     container.classList.add('welcome-text');
-    container.style.fontSize = '2.7em';
+    container.style.fontSize = '2.6em';
     container.style.textAlign = 'center';
 
     var text = 'Welcome to MathTransformer!';
