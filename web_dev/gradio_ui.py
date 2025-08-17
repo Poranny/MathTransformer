@@ -1,5 +1,7 @@
 import os
 from pathlib import Path
+import base64
+import mimetypes
 import requests
 import gradio as gr
 from dotenv import load_dotenv
@@ -13,7 +15,6 @@ WELCOME_FONT = os.getenv("WELCOME_FONT", "Merriweather")
 CONTACT_EMAIL = os.getenv("CONTACT_EMAIL", "")
 CONTACT_LINKEDIN = os.getenv("CONTACT_LINKEDIN", "")
 CONTACT_GITHUB = os.getenv("CONTACT_GITHUB", "")
-
 
 PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "https://mathtransformer.app/app")
 OG_TITLE = os.getenv("OG_TITLE", "MathTransformer")
@@ -35,8 +36,6 @@ HEAD_HTML = f"""
 <meta name="twitter:image" content="{OG_IMAGE}">
 """
 
-HERE = Path(__file__).resolve().parent
-
 def _read_and_fill(path: Path, mapping: dict) -> str:
     text = path.read_text(encoding="utf-8")
     for k, v in mapping.items():
@@ -53,6 +52,38 @@ def ask(prompt: str):
     except Exception as e:
         return {"error": str(e)}
 
+# ---- logo: og-image-big.png -> data: URL ----
+def _file_to_data_url(p: Path) -> str | None:
+    if not p.exists():
+        return None
+    mt, _ = mimetypes.guess_type(p.name)
+    if not mt:
+        mt = "image/png"
+    b = p.read_bytes()
+    b64 = base64.b64encode(b).decode("ascii")
+    return f"data:{mt};base64,{b64}"
+
+# prefer local ./static first; then /home/app/static
+CANDIDATES = [
+    HERE / "static" / "og-image-big.png",
+    Path("/home/app/static/og-image-big.png"),
+]
+LOGO_DATA_URL = None
+for cand in CANDIDATES:
+    LOGO_DATA_URL = _file_to_data_url(cand)
+    if LOGO_DATA_URL:
+        break
+
+if not LOGO_DATA_URL:
+    LOGO_DATA_URL = OG_IMAGE
+
+EXTRA_CSS = """
+#mt_logo_wrap{position:fixed;top:12px;left:24px;z-index:70;}
+#mt_logo_btn{display:inline-block;line-height:0;border:0;background:transparent;padding:0;cursor:pointer}
+#mt_logo_btn img{height:80px;width:auto;display:block}
+@media (max-width:600px){#mt_logo_btn img{height:80px}}
+"""
+
 placeholders = {
     "CONTACT_EMAIL": CONTACT_EMAIL,
     "CONTACT_LINKEDIN": CONTACT_LINKEDIN,
@@ -61,7 +92,7 @@ placeholders = {
 }
 
 js_code = _read_and_fill(HERE / "app.js", placeholders)
-css_code = _read_and_fill(HERE / "styles.css", placeholders)
+css_code = _read_and_fill(HERE / "styles.css", placeholders) + EXTRA_CSS
 
 with gr.Blocks(
     theme=gr.themes.Citrus(
@@ -74,6 +105,12 @@ with gr.Blocks(
     css=css_code,
     head=HEAD_HTML
 ) as demo:
+
+    gr.HTML(
+        f'<div id="mt_logo_wrap"><a id="mt_logo_btn" href="#" onclick="window.location.reload();return false;" aria-label="Reload"><img src="{LOGO_DATA_URL}" alt="Logo"></a></div>',
+        visible=True
+    )
+
     with gr.Column(elem_id="centerer", elem_classes=["col-gap"]):
         inp = gr.Textbox(
             label="Prompt",
