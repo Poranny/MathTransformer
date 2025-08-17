@@ -16,7 +16,7 @@ CONTACT_EMAIL = os.getenv("CONTACT_EMAIL", "")
 CONTACT_LINKEDIN = os.getenv("CONTACT_LINKEDIN", "")
 CONTACT_GITHUB = os.getenv("CONTACT_GITHUB", "")
 
-PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "https://mathtransformer.app/app")
+PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "https://mathtransformer.app/")
 OG_TITLE = os.getenv("OG_TITLE", "MathTransformer")
 OG_DESC  = os.getenv("OG_DESC", "Solving math equations from natural language descriptions")
 OG_IMAGE = os.getenv("OG_IMAGE", "https://mathtransformer.app/og-image.png")
@@ -52,7 +52,6 @@ def ask(prompt: str):
     except Exception as e:
         return {"error": str(e)}
 
-# ---- logo: og-image-big.png -> data: URL ----
 def _file_to_data_url(p: Path) -> str | None:
     if not p.exists():
         return None
@@ -63,7 +62,6 @@ def _file_to_data_url(p: Path) -> str | None:
     b64 = base64.b64encode(b).decode("ascii")
     return f"data:{mt};base64,{b64}"
 
-# prefer local ./static first; then /home/app/static
 CANDIDATES = [
     HERE / "static" / "og-image-big.png",
     Path("/home/app/static/og-image-big.png"),
@@ -81,7 +79,8 @@ EXTRA_CSS = """
 #mt_logo_wrap{position:fixed;top:12px;left:24px;z-index:70;}
 #mt_logo_btn{display:inline-block;line-height:0;border:0;background:transparent;padding:0;cursor:pointer}
 #mt_logo_btn img{height:80px;width:auto;display:block}
-@media (max-width:600px){#mt_logo_btn img{height:80px}}
+
+@media (max-width:768px){#mt_logo_wrap{display:none}}
 """
 
 placeholders = {
@@ -123,4 +122,4 @@ with gr.Blocks(
         btn.click(ask, inputs=inp, outputs=out)
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860, root_path="/app")
+    demo.launch(server_name="0.0.0.0", server_port=7860)
