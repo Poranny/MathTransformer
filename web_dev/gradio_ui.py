@@ -43,6 +43,15 @@ function refresh() {
 
     var gradioContainer = document.querySelector('.gradio-container');
     gradioContainer.insertBefore(container, gradioContainer.firstChild);
+
+    function setHeroHeightVar() {
+        var h = container.getBoundingClientRect().height;
+        var gap = 24;
+        document.documentElement.style.setProperty('--hero-h', (h + gap) + 'px');
+    }
+    setHeroHeightVar();
+    window.addEventListener('resize', setHeroHeightVar, { passive: true });
+
     return 'Animation created';
 }
 """
@@ -50,11 +59,11 @@ function refresh() {
 grad_css = """
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=JetBrains+Mono:wght@300..800&family=DM+Serif+Display:ital@0;1&family=Cormorant+Garamond:wght@400;600&family=Abril+Fatface&family=Cinzel:wght@400;700&family=Lora:wght@400;600&family=Merriweather:wght@400;700&family=Fraunces:wght@400;700&family=Spectral:wght@400;600&family=Prata&family=Marcellus&family=Libre+Baskerville:wght@400;700&display=swap');
 
-
 :root{
   --app-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
   --mono-font: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   --text-color: #2a2a2a;
+  --hero-h: 0px;
 }
 
 html, body { height: 100%; color: var(--text-color); }
@@ -81,17 +90,15 @@ code, pre, kbd, samp,
 }
 
 #centerer {
-  min-height: 80vh;
+  min-height: calc(70vh - var(--hero-h));
   display: flex !important;
   flex-direction: column;
   justify-content: center;
 }
 
 #gradio-animation.welcome-text {
-  position: absolute;
-  top: 50px;
-  left: 0;
-  right: 0;
+  margin-top: 48px;
+  margin-bottom: 0;
   pointer-events: none;
 }
 
@@ -118,6 +125,7 @@ with gr.Blocks(
             radius_size=gr.themes.sizes.text_lg,
             text_size=gr.themes.sizes.text_lg
         ),
+        title="MathTransformer",
         js=js_func,
         css=grad_css + extra_css
 ) as demo:
@@ -125,11 +133,11 @@ with gr.Blocks(
         inp = gr.Textbox(
             label="Prompt",
             lines=1,
-            placeholder="two a minus twentyone equals b...",
+            placeholder="a minus twentyone is equal to 0...",
             autofocus=True
         )
         btn = gr.Button("Send", size="md", variant="primary", elem_classes=["center-btn"])
         out = gr.JSON(label="Answer")
         btn.click(ask, inputs=inp, outputs=out)
 
-demo.launch(server_name="0.0.0.0", server_port=8000)
+demo.launch(server_name="0.0.0.0", server_port=7860)
