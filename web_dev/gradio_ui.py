@@ -15,16 +15,51 @@ def ask(prompt: str):
 
 js_func = """
 function refresh() {
-    const url = new URL(window.location);
-    if (url.searchParams.get('__theme') !== 'light') {
-        url.searchParams.set('__theme', 'light');
-        window.location.href = url.href;
+    (function stripThemeParam() {
+        const url = new URL(window.location.href);
+        if (url.searchParams.has('__theme')) {
+            url.searchParams.delete('__theme');
+            const newUrl = url.pathname + (url.search ? '?' + url.searchParams.toString() : '') + url.hash;
+            history.replaceState(null, '', newUrl);
+        }
+    })();
+
+    let applying = false;
+    function isLight() {
+        const html = document.documentElement;
+        const body = document.body;
+        const gc = document.querySelector('.gradio-container');
+        const htmlOk = !html.classList.contains('dark') && (html.getAttribute('data-theme') === 'light');
+        const bodyOk = !body.classList.contains('dark') && ((body.getAttribute('data-theme') || 'light') === 'light');
+        const gcOk = !gc || (gc.getAttribute('data-theme') === 'light');
+        const schemeOk = (html.style.colorScheme || 'light') === 'light';
+        return htmlOk && bodyOk && gcOk && schemeOk;
     }
+    function applyLight() {
+        if (applying) return;
+        applying = true;
+        const html = document.documentElement;
+        const body = document.body;
+        const gc = document.querySelector('.gradio-container');
+        if (html.classList.contains('dark')) html.classList.remove('dark');
+        if (html.getAttribute('data-theme') !== 'light') html.setAttribute('data-theme', 'light');
+        if (html.style.colorScheme !== 'light') html.style.colorScheme = 'light';
+        if (body.classList.contains('dark')) body.classList.remove('dark');
+        if ((body.getAttribute('data-theme') || 'light') !== 'light') body.setAttribute('data-theme', 'light');
+        if (gc && gc.getAttribute('data-theme') !== 'light') gc.setAttribute('data-theme', 'light');
+        applying = false;
+    }
+    if (!isLight()) applyLight();
+    const config = { attributes: true, attributeFilter: ['class', 'data-theme'] };
+    const o = new MutationObserver(() => { if (!isLight()) applyLight(); });
+    o.observe(document.documentElement, config);
+    o.observe(document.body, config);
+    const gc = document.querySelector('.gradio-container');
+    if (gc) o.observe(gc, config);
 
     var container = document.createElement('div');
     container.id = 'gradio-animation';
     container.classList.add('welcome-text');
-    container.style.fontSize = '2.6em';
     container.style.textAlign = 'center';
 
     var text = 'Welcome to MathTransformer!';
@@ -37,12 +72,12 @@ function refresh() {
                 letter.innerText = text[i];
                 container.appendChild(letter);
                 setTimeout(function() { letter.style.opacity = '1'; }, 50);
-            }, i * 50);
+            }, i * 45);
         })(i);
     }
 
     var gradioContainer = document.querySelector('.gradio-container');
-    gradioContainer.insertBefore(container, gradioContainer.firstChild);
+    if (gradioContainer) gradioContainer.insertBefore(container, gradioContainer.firstChild);
 
     function setHeroHeightVar() {
         var h = container.getBoundingClientRect().height;
@@ -52,70 +87,121 @@ function refresh() {
     setHeroHeightVar();
     window.addEventListener('resize', setHeroHeightVar, { passive: true });
 
-    return 'Animation created';
+    return 'ok';
 }
 """
 
 grad_css = """
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=JetBrains+Mono:wght@300..800&family=DM+Serif+Display:ital@0;1&family=Cormorant+Garamond:wght@400;600&family=Abril+Fatface&family=Cinzel:wght@400;700&family=Lora:wght@400;600&family=Merriweather:wght@400;700&family=Fraunces:wght@400;700&family=Spectral:wght@400;600&family=Prata&family=Marcellus&family=Libre+Baskerville:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap');
 
 :root{
-  --app-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
-  --mono-font: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-  --text-color: #2a2a2a;
+  --app-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --mono-font: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --text-color: #222222;
   --hero-h: 0px;
 }
 
-html, body { height: 100%; color: var(--text-color); }
-
-html, body, .gradio-container, .gradio-container * {
-  font-family: var(--app-font) !important;
+html, body {
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  background: #fff;
+  color: var(--text-color);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+.gradio-container {
+  width: 100%;
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+  color: var(--text-color);
+}
+
+.gradio-container * {
+  font-family: var(--app-font);
   letter-spacing: .2px;
-  color: var(--text-color) !important;
+  color: inherit;
 }
 
 code, pre, kbd, samp,
 .ace_editor, .cm-scroller, .json, [data-testid="json-output"] {
-  font-family: var(--mono-font) !important;
+  font-family: var(--mono-font);
   font-variant-ligatures: contextual;
-}
-
-.gradio-container {
-  width: 40vw;
-  min-width: 640px;
-  margin: 0 auto;
-  position: relative;
+  color: var(--text-color);
 }
 
 #centerer {
   min-height: calc(70vh - var(--hero-h));
-  display: flex !important;
+  display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 28px;
 }
 
 #gradio-animation.welcome-text {
-  margin-top: 48px;
+  margin-top: 40px;
   margin-bottom: 0;
   pointer-events: none;
+  width: 100%;
+  font-family: 'Merriweather', var(--app-font);
+  font-size: clamp(28px, 6vw, 38px);
 }
 
-.col-gap { gap: 60px !important; }
-footer{display:none !important}
+.col-gap { gap: 48px; }
 
 .center-btn {
-  display: block !important;
-  margin: 0 auto !important;
+  display: block;
+  margin: 0 auto;
 }
 
 input, textarea, button, .btn { font-weight: 500; }
+
+/* hide default bottom footer/buttons */
+footer, footer * { display: none !important; }
+
+/* phones portrait */
+@media (max-width: 600px) {
+  .gradio-container {
+    padding-left: 12px;
+    padding-right: 12px;
+    max-width: 100%;
+  }
+  #centerer { min-height: calc(60vh - var(--hero-h)); }
+}
+
+/* subtle upscale for large screens */
+@media (min-width: 1600px) and (min-height: 900px) {
+  html { font-size: 18px; }
+  .gradio-container { max-width: 1100px; }
+  #centerer { gap: 32px; }
+  label, .label, .input-label { font-size: 1.08rem; }
+  .gradio-container :where(p,span,li,code,pre,input,textarea,button,.btn) { font-size: 1.06rem; }
+}
+
+/* bigger, but still subtle, for 1920x1080 and up */
+@media (min-width: 1920px) and (min-height: 1000px) {
+  html { font-size: 19px; }
+  .gradio-container { max-width: 1280px; }
+  #centerer { gap: 36px; }
+  /* keep title size stable via px-based clamp above */
+  label, .label, .input-label { font-size: 1.125rem; }
+  .gradio-container :where(p,span,li,code,pre,input,textarea,button,.btn) { font-size: 1.12rem; }
+}
 """
 
 extra_css = f"""
 #gradio-animation.welcome-text, #gradio-animation.welcome-text * {{
-  font-family: '{WELCOME_FONT}', var(--app-font) !important;
+  font-family: '{WELCOME_FONT}', var(--app-font);
 }}
 """
 
@@ -136,8 +222,8 @@ with gr.Blocks(
             placeholder="a minus twentyone is equal to 0...",
             autofocus=True
         )
-        btn = gr.Button("Send", size="md", variant="primary", elem_classes=["center-btn"])
+        btn = gr.Button("Send", size="lg", variant="primary", elem_classes=["center-btn"])
         out = gr.JSON(label="Answer")
         btn.click(ask, inputs=inp, outputs=out)
 
-demo.launch(server_name="0.0.0.0", server_port=7860)
+demo.launch(server_name="0.0.0.0", server_port=7860, root_path="/app")
