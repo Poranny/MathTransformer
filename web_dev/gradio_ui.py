@@ -97,7 +97,8 @@ with gr.Blocks(
             label="Prompt",
             lines=1,
             placeholder="a minus twentyone is equal to 0...",
-            autofocus=True
+            autofocus=True,
+            html_attributes={"spellcheck": "false", "autocorrect": "off"}
         )
         btn = gr.Button("Send", size="lg", variant="primary", elem_classes=["center-btn"])
         out = gr.JSON(label="Answer")
