@@ -94,7 +94,7 @@ with gr.Blocks(
 
     with gr.Column(elem_id="centerer", elem_classes=["col-gap"]):
         inp = gr.Textbox(
-            label="Prompt",
+            label="Your equation",
             lines=1,
             placeholder="a minus twentyone is equal to 0...",
             autofocus=True,
