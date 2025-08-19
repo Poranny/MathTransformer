@@ -79,15 +79,27 @@ with gr.Blocks(
         )
         btn = gr.Button("Send", size="lg", variant="primary", elem_classes=["center-btn"])
         with gr.Row(elem_id="mt-row", equal_height=True):
-            out_symbols = gr.HTML(value="", label=None)
-            out_equations = gr.HTML(value="", label=None)
-            out_solution = gr.HTML(value="", label=None)
+            out_symbols = gr.HTML(value="", label=None, visible=True)
+            out_equations = gr.HTML(value="", label=None, visible=True)
+            out_solution = gr.HTML(value="", label=None, visible=True)
+
+        # Dolny, zaokrąglony box na błędy (ukryty domyślnie)
+        err_box = gr.HTML(
+            value="",
+            visible=False,
+            elem_id="mt-error-box",
+            elem_classes=["mt-error", "mt-error-rounded"]
+        )
 
         btn.click(
-            start_loading, inputs=None, outputs=[out_symbols, out_equations, out_solution],
+            start_loading,
+            inputs=None,
+            outputs=[out_symbols, out_equations, out_solution, err_box],
             show_progress="hidden"
         ).then(
-            handle, inputs=inp, outputs=[out_symbols, out_equations, out_solution],
+            handle,
+            inputs=inp,
+            outputs=[out_symbols, out_equations, out_solution, err_box],
             show_progress="hidden"
         )
 

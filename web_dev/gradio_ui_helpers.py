@@ -4,6 +4,13 @@ from typing import Any, Dict, Tuple, Callable
 import base64
 import mimetypes
 import requests
+import gradio as gr
+
+try:
+    from ans_code_interpret import nice_message
+except Exception:
+    def nice_message(code: str | None) -> str:
+        return "Something went wrong. Please try again 🙂"
 
 
 def read_and_fill(path: Path, mapping: Dict[str, str]) -> str:
@@ -72,47 +79,67 @@ def _render_solution(data: Dict[str, Any]) -> str:
         body = "<div class='mt-kv-list'>" + "".join(lines) + "</div>"
     return f"<div class='mt-card'><div class='mt-card-title'>Solution</div>{body}</div>"
 
-def _format_error(msg: str) -> Tuple[str, str, str]:
-    html = (
-        "<div class='mt-card error'>"
-        "<div class='mt-card-title'>Error</div>"
-        f"<p class='mt-error'>{_escape_html(msg)}</p></div>"
+def _error_box_html(user_message: str) -> str:
+    return (
+        "<div class='mt-error-card'>"
+        "<div class='mt-error-title'>Oops!</div>"
+        f"<div class='mt-error-body'>{_escape_html(user_message)}</div>"
+        "</div>"
     )
-    return html, html, html
 
-
-def _ask(api_base: str, prompt: str) -> Dict[str, Any] | Dict[str, str]:
+def _ask(api_base: str, prompt: str) -> dict:
     if not prompt.strip():
-        return {"error": "Prompt is empty"}
+        return {"ok": False, "code": "PROMPT_INVALID"}
+
     try:
         r = requests.post(f"{api_base}/answer", json={"prompt": prompt}, timeout=300)
-        r.raise_for_status()
-        return r.json()
-    except Exception as e:
-        return {"error": str(e)}
+    except requests.RequestException:
+        return {"ok": False, "code": "NETWORK_ERROR"}
+
+    try:
+        payload = r.json()
+    except ValueError:
+        payload = None
+
+    if r.ok:
+        return {"ok": True, "data": payload}
+
+    detail = (payload or {}).get("detail")
+    code = (detail or {}).get("code") if isinstance(detail, dict) else None
+    return {"ok": False, "code": code or "UNKNOWN_ERROR"}
 
 
 def build_handlers(api_base: str) -> Tuple[
-    Callable[[], Tuple[str, str, str]],
-    Callable[[str], Tuple[str, str, str]]
+    Callable[[], Tuple[Any, Any, Any, Any]],
+    Callable[[str], Tuple[Any, Any, Any, Any]]
 ]:
-    def start_loading() -> Tuple[str, str, str]:
+    def start_loading() -> Tuple[Any, Any, Any, Any]:
         return (
-            _skeleton_card("Symbols", lines=5),
-            _skeleton_card("Equations", lines=5),
-            _skeleton_card("Solution", lines=4),
+            gr.update(visible=True,  value=_skeleton_card("Symbols",   lines=5)),
+            gr.update(visible=True,  value=_skeleton_card("Equations", lines=5)),
+            gr.update(visible=True,  value=_skeleton_card("Solution",  lines=4)),
+            gr.update(visible=False, value=""),
         )
 
-    def handle(prompt: str) -> Tuple[str, str, str]:
+    def handle(prompt: str) -> Tuple[Any, Any, Any, Any]:
         res = _ask(api_base, prompt)
-        if isinstance(res, dict) and "error" in res:
-            return _format_error(res["error"])
-        if not isinstance(res, dict):
-            return _format_error("Invalid response from API")
+
+        if res.get("ok"):
+            data = res.get("data") or {}
+            return (
+                gr.update(visible=True,  value=_render_symbols(data)),
+                gr.update(visible=True,  value=_render_equations(data)),
+                gr.update(visible=True,  value=_render_solution(data)),
+                gr.update(visible=False, value=""),
+            )
+
+        code = res.get("code")
+        user_msg = nice_message(code)
         return (
-            _render_symbols(res),
-            _render_equations(res),
-            _render_solution(res),
+            gr.update(visible=False, value=""),
+            gr.update(visible=False, value=""),
+            gr.update(visible=False, value=""),
+            gr.update(visible=True,  value=_error_box_html(user_msg)),
         )
 
     return start_loading, handle

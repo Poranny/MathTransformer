@@ -73,9 +73,9 @@ def parse_response (response) :
     answer = response
 
     if 'NOTMATH_WARNING' in answer:
-        raise Exception('The prompt was detected not to be a math equation.')
+        raise Exception('NOTMATH_WARNING')
     elif 'INEQUAL_WARNING' in answer:
-        raise Exception('The prompt was detected to be an inequality.')
+        raise Exception('INEQUAL_WARNING')
 
     parsed_answer = result_parser(answer)
 

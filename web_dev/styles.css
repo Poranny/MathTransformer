@@ -316,3 +316,22 @@ button[aria-live="polite"] span:has(> svg) { display: none !important; }
     grid-template-columns: 1fr;
   }
 }
+
+#mt-error-box.mt-error.mt-error-rounded,
+.mt-error-card {
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: #fff4f4;
+  border: 1px solid #ffd3d3;
+  color: #7a1f1f;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+}
+
+.mt-error-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.mt-error-body {
+  line-height: 1.45;
+}
