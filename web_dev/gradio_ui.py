@@ -73,7 +73,7 @@ with gr.Blocks(
         inp = gr.Textbox(
             label="Your equation",
             lines=1,
-            placeholder="a minus twenty-one is equal to 0...",
+            placeholder="x minus twenty-one is equal to 0...",
             autofocus=True,
             html_attributes={"spellcheck": "false", "autocorrect": "off"}
         )
