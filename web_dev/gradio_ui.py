@@ -1,10 +1,14 @@
+from __future__ import annotations
 import os
 from pathlib import Path
-import base64
-import mimetypes
-import requests
 import gradio as gr
 from dotenv import load_dotenv
+
+from gradio_ui_helpers import (
+    build_handlers,
+    file_to_data_url,
+    read_and_fill,
+)
 
 HERE = Path(__file__).resolve().parent
 load_dotenv(HERE / ".env", override=False)
@@ -21,35 +25,9 @@ OG_TITLE = os.getenv("OG_TITLE", "MathTransformer")
 OG_DESC  = os.getenv("OG_DESC", "Solving math equations from natural language descriptions")
 OG_IMAGE = os.getenv("OG_IMAGE", "https://mathtransformer.app/og-image.png")
 
-HEAD_HTML = f"""
+HEAD_HTML = """
 <link rel="icon" href="/og-image.png" type="image/png" sizes="32x32">
 """
-
-def _read_and_fill(path: Path, mapping: dict) -> str:
-    text = path.read_text(encoding="utf-8")
-    for k, v in mapping.items():
-        text = text.replace(f"__{k}__", v)
-    return text
-
-def ask(prompt: str):
-    if not prompt.strip():
-        return {"error": "Prompt is empty"}
-    try:
-        r = requests.post(f"{API}/answer", json={"prompt": prompt}, timeout=300)
-        r.raise_for_status()
-        return r.json()
-    except Exception as e:
-        return {"error": str(e)}
-
-def _file_to_data_url(p: Path) -> str | None:
-    if not p.exists():
-        return None
-    mt, _ = mimetypes.guess_type(p.name)
-    if not mt:
-        mt = "image/png"
-    b = p.read_bytes()
-    b64 = base64.b64encode(b).decode("ascii")
-    return f"data:{mt};base64,{b64}"
 
 CANDIDATES = [
     HERE / "static" / "og-image-big.png",
@@ -57,13 +35,11 @@ CANDIDATES = [
 ]
 LOGO_DATA_URL = None
 for cand in CANDIDATES:
-    LOGO_DATA_URL = _file_to_data_url(cand)
+    LOGO_DATA_URL = file_to_data_url(cand)
     if LOGO_DATA_URL:
         break
-
 if not LOGO_DATA_URL:
     LOGO_DATA_URL = OG_IMAGE
-
 
 placeholders = {
     "CONTACT_EMAIL": CONTACT_EMAIL,
@@ -71,9 +47,10 @@ placeholders = {
     "CONTACT_GITHUB": CONTACT_GITHUB,
     "WELCOME_FONT": WELCOME_FONT,
 }
+js_code = read_and_fill(HERE / "app.js", placeholders)
+css_code = read_and_fill(HERE / "styles.css", placeholders)
 
-js_code = _read_and_fill(HERE / "app.js", placeholders)
-css_code = _read_and_fill(HERE / "styles.css", placeholders)
+start_loading, handle = build_handlers(api_base=API)
 
 with gr.Blocks(
     theme=gr.themes.Citrus(
@@ -96,13 +73,23 @@ with gr.Blocks(
         inp = gr.Textbox(
             label="Your equation",
             lines=1,
-            placeholder="a minus twentyone is equal to 0...",
+            placeholder="a minus twenty-one is equal to 0...",
             autofocus=True,
             html_attributes={"spellcheck": "false", "autocorrect": "off"}
         )
         btn = gr.Button("Send", size="lg", variant="primary", elem_classes=["center-btn"])
-        out = gr.JSON(label="Answer")
-        btn.click(ask, inputs=inp, outputs=out)
+        with gr.Row(elem_id="mt-row", equal_height=True):
+            out_symbols = gr.HTML(value="", label=None)
+            out_equations = gr.HTML(value="", label=None)
+            out_solution = gr.HTML(value="", label=None)
+
+        btn.click(
+            start_loading, inputs=None, outputs=[out_symbols, out_equations, out_solution],
+            show_progress="hidden"
+        ).then(
+            handle, inputs=inp, outputs=[out_symbols, out_equations, out_solution],
+            show_progress="hidden"
+        )
 
 if __name__ == "__main__":
     demo.launch(server_name="0.0.0.0", server_port=7860)
