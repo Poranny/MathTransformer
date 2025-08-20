@@ -78,6 +78,7 @@ with gr.Blocks(
             html_attributes={"spellcheck": "false", "autocorrect": "off"}
         )
         btn = gr.Button("Send", size="lg", variant="primary", elem_classes=["center-btn"])
+
         with gr.Row(elem_id="mt-row", equal_height=True):
             out_symbols = gr.HTML(value="", label=None, visible=True)
             out_equations = gr.HTML(value="", label=None, visible=True)

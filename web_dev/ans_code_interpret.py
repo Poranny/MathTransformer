@@ -2,40 +2,40 @@ from typing import Optional, Dict
 
 _MESSAGES: Dict[str, str] = {
     "MODEL_NOT_READY": (
-        "MathTransformer is still stretching its neurons... Please try again in a moment."
+        "MathTransformer is still stretching its neurons...\nPlease try again in a moment."
     ),
     "GENERATOR_INIT_FAILED": (
-        "The math engine stumbled on startup. Let’s try again later."
+        "The math engine stumbled on startup.\nLet’s try again later."
     ),
     "PROMPT_INVALID": (
-        "Hmm, I can’t quite prepare that request. Try simplifying your input. "
+        "Hmm, I can’t quite prepare that request.\nTry simplifying your input. "
     ),
     "GENERATION_FAILED": (
-        "The generator lost its train of thought mid-equation. Please try again."
+        "The generator lost its train of thought mid-equation.\nPlease try again."
     ),
     "PARSING_ERROR": (
-        "I couldn’t interpret the generated output as equations. Try rephrasing the request a bit."
+        "I couldn’t interpret the generated output as equations.\nTry rephrasing the request a bit."
     ),
     "NOTMATH_WARNING": (
-        "Oh, that didn’t look like math to me... maybe a poem? Try phrasing it more numerically"
+        "Oh, that didn’t look like math to me... maybe a poem?\nTry phrasing it more numerically"
     ),
     "INEQUAL_WARNING": (
-        "I can only handle proper equations, not inequalities :( Could you rewrite it as an equation?"
+        "I can only handle proper equations, not inequalities :(\nCould you rewrite it as an equation?"
     ),
     "SOLVE_FAILED": (
-        "These equations resisted my solving powers. Try adjusting the input or provide more details."
+        "These equations resisted my solving powers.\nTry adjusting the input or provide more details."
     ),
     "SERIALIZATION_FAILED": (
-        "I solved it, but dropped the chalk while writing it down. Please try again."
+        "I solved it, but dropped the chalk while writing it down.\nPlease try again."
     ),
     "NETWORK_ERROR": (
-        "MathTransformer is waving from afar but the line broke. Please check your connection and try again."
+        "MathTransformer is waving from afar but the line broke.\nPlease check your connection and try again."
     ),
     "TIMEOUT": (
-        "Still calculating... or just daydreaming. Please try again."
+        "Still calculating... or just daydreaming.\nPlease try again."
     ),
     "UNKNOWN_ERROR": (
-        "An unexpected gremlin appeared. Please try again."
+        "An unexpected gremlin appeared.\nPlease try again."
     ),
 }
 
