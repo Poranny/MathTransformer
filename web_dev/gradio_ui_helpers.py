@@ -68,7 +68,11 @@ def _render_equations(data: Dict[str, Any]) -> str:
 
 def _render_solution(data: Dict[str, Any]) -> str:
     sol = data.get("solution") or {}
-    if not sol:
+
+    if isinstance(sol, dict) and sol.get("result") == []:
+        from ans_code_interpret import nice_message
+        body = f"<div class='mt-empty'>{_escape_html(nice_message('NO_SOLUTION'))}</div>"
+    elif not sol:
         body = "<div class='mt-empty'>Empty</div>"
     else:
         lines = []
@@ -77,7 +81,9 @@ def _render_solution(data: Dict[str, Any]) -> str:
                 f"<div class='mt-kv'><code>{_escape_html(str(k))} = {_escape_html(str(v))}</code></div>"
             )
         body = "<div class='mt-kv-list'>" + "".join(lines) + "</div>"
+
     return f"<div class='mt-card'><div class='mt-card-title'>Solution</div>{body}</div>"
+
 
 def _error_box_html(user_message: str) -> str:
     return (

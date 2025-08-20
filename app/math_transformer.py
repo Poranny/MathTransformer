@@ -56,7 +56,7 @@ def setup_prompt(nl_prompt: str) -> str:
         "   - Be in single quotes: 'example'\n"
         "   - Consist of two expressions separated by =\n"
         "   - Both of the expressions must consist of named variables, numbers, and operators between them\n"
-        "   - The named variables consist of latin characters only, e.g. x, y, var, john, apple etc.\n"
+        "   - The named variables start with latin characters only, and might contain digits, e.g. x, y, john, var1, apple, const1b etc.\n"
         "   - The numbers should use '.' for decimal points when necessary\n"
         "   - The only operators allowed are: +, -, *, /, ** and there should be spaces on both sides of each operator\n"
         "2. If the input describes an inequality (>, <, >=, <=, !=, or their verbal forms), respond ONLY with: INEQUAL_WARNING.\n"
@@ -69,8 +69,10 @@ def setup_prompt(nl_prompt: str) -> str:
          "'3 * a + 4 * b = 7'"),
         ("This is the equation described in a natural language:\n<<<\ntwo a minus twentyone equals b. and c squared equals b as well. c=2a\n>>>",
          "'2 * a - 21 = b', 'c ** 2 = b', 'c = 2 * a'"),
-        ("This is the equation described in a natural language:\n<<<\nx is 1. var b is 20-x.\n>>>",
+        ("This is the equation described in a natural language:\n<<<\nx is 1. variable b is 20-x.\n>>>",
          "'x = 1', 'b = 20 - x'"),
+        ("This is the equation described in a natural language:\n<<<\nconstant1a is two times more than var1Z\n>>>",
+         "'constant1a = 2 * var1Z'"),
     ]
 
     user_txt = f"This is the equation described in a natural language:\n<<<\n{nl_prompt}\n>>>"

@@ -37,6 +37,9 @@ _MESSAGES: Dict[str, str] = {
     "UNKNOWN_ERROR": (
         "An unexpected gremlin appeared.\nPlease try again."
     ),
+    "NO_SOLUTION": (
+        "I couldn’t find a consistent solution here...\nMaybe the equations don’t quite fit together?"
+    ),
 }
 
 def nice_message(code: Optional[str]) -> str:

@@ -15,19 +15,13 @@ def result_parser (answer):
 
     return answers_cleared
 
-def explicit_multiply_parser (equation) :
-    pattern = r'([0-9])\s*([A-Za-z])|([A-Za-z])\s*([0-9])'
+def explicit_multiply_parser(equation):
+    pattern = r'(?<![A-Za-z])(\d+)\s*([A-Za-z]+)'
 
-    def insert_multiply(match):
-        if match.group(1) and match.group(2):
-            # digit+letter
-            return f"{match.group(1)} * {match.group(2)}"
-        else:
-            # letter+digit
-            return f"{match.group(3)} * {match.group(4)}"
+    def insert_multiply(m):
+        return f"{m.group(1)} * {m.group(2)}"
 
-    eq_expl = re.sub(pattern, insert_multiply, equation)
-    return eq_expl
+    return re.sub(pattern, insert_multiply, equation)
 
 def is_safe_equation(s: str) -> bool:
     if s.count('=') != 1: return False # only one equation sign
@@ -48,25 +42,19 @@ def is_safe_equation(s: str) -> bool:
 def get_symbols (equations) :
     from sympy import symbols, Symbol
 
-    symbol_names = set()
+    pattern = r'[A-Za-z][A-Za-z0-9]*'
 
+    names = set()
     for eq in equations:
-        matches = re.findall(r"[A-Za-z]+", eq)
-        symbol_names.update(matches)
+        names.update(re.findall(pattern, eq))
 
-    symbol_names = sorted(list(symbol_names))
+    blacklist = {'I', 'E', 'oo', 'pi', 'nan', 'zoo', 'sin', 'cos', 'tan', 'log', 'exp'}
+    names = sorted(n for n in names if n not in blacklist)
 
-    sympy_symbols = symbols(" ".join(symbol_names))
+    if not names:
+        return []
 
-    try:
-        iter(sympy_symbols)
-    except TypeError:
-        sympy_symbols = [sympy_symbols]
-    else:
-        if isinstance(sympy_symbols, str) or isinstance(sympy_symbols, Symbol):
-            sympy_symbols = [sympy_symbols]
-
-    return sympy_symbols
+    return list(symbols(' '.join(names), seq=True))
 
 
 def parse_response (response) :
@@ -89,17 +77,46 @@ def parse_response (response) :
 
     return equations
 
+def _to_jsonable(value):
+
+    try:
+        if isinstance(value, (int, float)):
+            return float(round(value, 5))
+
+        from sympy import N
+        if hasattr(value, "is_number") and bool(value.is_number):
+            n = N(value)
+            try:
+                return float(round(n, 5))
+            except Exception:
+                return str(value)
+
+        if hasattr(value, "__iter__") and not isinstance(value, (str, bytes)):
+            return [_to_jsonable(v) for v in value]
+    except Exception:
+        pass
+
+    return str(value)
+
 
 def solution_to_json(solution):
-    from sympy import N
+    if solution is None:
+        return {}
 
-    return {
-        str(symbol): float(round(N(value), 5))
-        for symbol, value in solution[0].items()
-    }
+    if isinstance(solution, list) and solution:
+        candidate = solution[0]
+    else:
+        candidate = solution
+
+    if isinstance(candidate, dict):
+        return {str(sym): _to_jsonable(val) for sym, val in candidate.items()}
+
+    return {"result": _to_jsonable(candidate)}
+
 
 def equations_to_json(equations):
-    return list(equations)
+    return [str(eq) for eq in equations]
+
 
 def symbols_to_json(symbols):
     return [str(symbol) for symbol in symbols]
