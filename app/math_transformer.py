@@ -61,6 +61,8 @@ def setup_prompt(nl_prompt: str) -> str:
         "   - The only operators allowed are: +, -, *, /, ** and there should be spaces on both sides of each operator\n"
         "2. If the input describes an inequality (>, <, >=, <=, !=, or their verbal forms), respond ONLY with: INEQUAL_WARNING.\n"
         "3. If the input does not describe a valid math equation, respond ONLY with: NOTMATH_WARNING.\n"
+        "2. If the input clearly and unambiguously describes an inequality (>, <, >=, <=, !=, or their verbal forms), respond ONLY with: INEQUAL_WARNING. In case of ambiguity, interpret it as a proper equation.\n"
+        "3. If the input clearly and unambiguously does not describe a valid math equation, respond ONLY with: NOTMATH_WARNING.\n"
         "Do not solve the equations. Do not explain anything. Do not output code. Output nothing except what the rules above require."
     )
 
