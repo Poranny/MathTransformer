@@ -83,7 +83,6 @@ with gr.Blocks(
             out_equations = gr.HTML(value="", label=None, visible=True)
             out_solution = gr.HTML(value="", label=None, visible=True)
 
-        # Dolny, zaokrąglony box na błędy (ukryty domyślnie)
         err_box = gr.HTML(
             value="",
             visible=False,

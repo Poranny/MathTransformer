@@ -41,8 +41,10 @@ def answer(data: SolveRequest, generator=Depends(get_generator)):
     try:
         equations = parse_response(response)
         symbols = get_symbols(equations)
-    except Exception:
-        api_error(422, "PARSING_ERROR")
+    except Exception as error:
+        raw = getattr(error, "code", None) or (error.args[0] if error.args else None)
+        code = raw if isinstance(raw, str) else "PARSING_ERROR"
+        api_error(422, code)
 
     try:
         solution = solve_equations(equations, symbols)

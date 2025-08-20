@@ -16,6 +16,12 @@ _MESSAGES: Dict[str, str] = {
     "PARSING_ERROR": (
         "I couldn’t interpret the generated output as equations. Try rephrasing the request a bit."
     ),
+    "NOTMATH_WARNING": (
+        "Oh, that didn’t look like math to me... maybe a poem? Try phrasing it more numerically"
+    ),
+    "INEQUAL_WARNING": (
+        "I can only handle proper equations, not inequalities :( Could you rewrite it as an equation?"
+    ),
     "SOLVE_FAILED": (
         "These equations resisted my solving powers. Try adjusting the input or provide more details."
     ),
