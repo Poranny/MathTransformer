@@ -80,7 +80,7 @@ with gr.Blocks(
                 <ul>
                   <li>Describe your equation in English; be as creative as you like!</li>
                   <li>Examples: <code>x plus one equals 10</code>, or
-                  <code>a times two is equal to 59.5 multiplied by y... and y = 7</code></li>
+                  <code>a times two is equal to 59.5 divided by b... and b = 7</code></li>
                   <li>Press <strong>Solve</strong> and wait for the results to appear :)</li>
                 </ul>
         
