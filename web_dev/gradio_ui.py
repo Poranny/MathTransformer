@@ -70,6 +70,30 @@ with gr.Blocks(
     )
 
     with gr.Column(elem_id="centerer", elem_classes=["col-gap"]):
+        instructions = gr.Markdown(
+            """
+                <div class="mt-info-title">
+                  <img class="mt-info-icon" src="https://cdn.jsdelivr.net/npm/bootstrap-icons/icons/journal-text.svg" alt="Instructions">
+                  <h3>How to use</h3>
+                </div>
+                The service turns a natural-language description of an equation into real math - and solves it.
+                <ul>
+                  <li>Describe your equation in English; be as creative as you like!</li>
+                  <li>Examples: <code>x plus one equals 10</code>, or
+                  <code>a times two is equal to 59.5 multiplied by y... and y = 7</code></li>
+                  <li>Press <strong>Solve</strong> and wait for the results to appear :)</li>
+                </ul>
+        
+                <p class="mt-info-note">
+                  Sidenote: Currently supported operations are addition, subtraction, multiplication, division, and exponentiation.
+                  You can also use parentheses <code>( )</code>. Constant <code>π</code> is supported.
+                  Trigonometric functions (sine, tan, and more) and complex operations are on the way - stay tuned!
+                </p>
+            """,
+            elem_id="mt-instructions",
+        )
+
+
         inp = gr.Textbox(
             label="Your equation",
             lines=1,
@@ -77,7 +101,7 @@ with gr.Blocks(
             autofocus=True,
             html_attributes={"spellcheck": "false", "autocorrect": "off"}
         )
-        btn = gr.Button("Send", size="lg", variant="primary", elem_classes=["center-btn"])
+        btn = gr.Button("Solve", size="lg", variant="primary", elem_classes=["center-btn"])
 
         with gr.Row(elem_id="mt-row", equal_height=True):
             out_symbols = gr.HTML(value="", label=None, visible=True)
