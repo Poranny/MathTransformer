@@ -60,7 +60,7 @@ placeholders = {
     "TITLE_FONT_URL": TITLE_FONT_URL,
     "BODY_FONT_URL": BODY_FONT_URL,
 }
-print(TITLE_FONT, BODY_FONT)
+
 js_code = read_and_fill(HERE / "app.js", placeholders)
 css_code = read_and_fill(HERE / "styles.css", placeholders)
 

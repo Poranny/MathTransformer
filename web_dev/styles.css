@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=__TITLE_FONT_URL__:wght@400..800&family=__BODY_FONT_URL__:wght@300..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=__TITLE_FONT_URL__:wght@400..700&family=__BODY_FONT_URL__:wght@400..700&display=swap');
 
 :root{
-  --title-font: "__TITLE_FONT__", Georgia, "Times New Roman", serif;
-  --app-font: "__BODY_FONT__", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  --mono-font: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --title-font: "__TITLE_FONT__", Georgia;
+  --app-font: "__BODY_FONT__", system-ui;
+  --mono-font: Consolas, monospace;
 
   --text-color: #222222;
   --muted: #6b7280;
