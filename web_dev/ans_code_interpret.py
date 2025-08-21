@@ -17,7 +17,7 @@ _MESSAGES: Dict[str, str] = {
         "I couldn’t interpret the generated output as equations.\nTry rephrasing the request a bit."
     ),
     "NOTMATH_WARNING": (
-        "Oh, that didn’t look like math to me... maybe a poem?\nTry phrasing it more numerically"
+        "Oh, that didn’t look like an equation to me... maybe a poem?\nTry phrasing it more numerically"
     ),
     "INEQUAL_WARNING": (
         "I can only handle proper equations, not inequalities :(\nCould you rewrite it as an equation?"
