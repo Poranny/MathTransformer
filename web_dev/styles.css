@@ -309,7 +309,7 @@ box-shadow: 0 4px 18px rgba(0,0,0,0.06);
 .mt-error-body { line-height: 1.45; }
 
 #mt-instructions {
-background: var(--surface);
+background: #FAF7F2;
 border: 1px solid var(--border);
 border-radius: 14px;
 box-shadow: var(--shadow);

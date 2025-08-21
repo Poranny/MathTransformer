@@ -149,3 +149,23 @@ def build_handlers(api_base: str) -> Tuple[
         )
 
     return start_loading, handle
+def instructions_html() -> str:
+    return """
+        <div class="mt-info-title">
+          <img class="mt-info-icon" src="https://cdn.jsdelivr.net/npm/bootstrap-icons/icons/journal-text.svg" alt="Instructions">
+          <h3>How to use</h3>
+        </div>
+        The service turns a natural-language description of an equation into real math - and solves it.
+        <ul>
+          <li>Describe your equation in English; be as creative as you like!</li>
+          <li>Examples: <code>x plus one equals 10</code>, or
+          <code>a times two is equal to 59.5 divided by b... and b = 7</code></li>
+          <li>Press <strong>Solve</strong> and wait for the results to appear :)</li>
+        </ul>
+
+        <p class="mt-info-note">
+          Sidenote: Currently supported operations are addition, subtraction, multiplication, division, and exponentiation.
+          You can also use parentheses <code>( )</code>. Constant <code>π</code> is supported.
+          Trigonometric functions (sine, tan, and more) and complex operations are on the way - stay tuned!
+        </p>
+    """
