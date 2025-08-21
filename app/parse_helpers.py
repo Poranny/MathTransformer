@@ -26,13 +26,18 @@ def explicit_multiply_parser(equation):
 
 
 def is_safe_equation(s: str) -> bool:
-    if s.count('=') != 1: return False # only one equation sign
-    if re.search(r"[\"'`_<>!^&|:%,$\\\[\]{}]", s): return False # forbidden chars
-    if not re.fullmatch(r"[A-Za-z0-9+\-*/=().\s]+", s): return False # allowed chars
-    if re.search(r"[A-Za-z]\s*\.\s*[A-Za-z0-9]", s): return False # a.b not allowed
-    if re.search(r"[A-Za-z][A-Za-z0-9]*\s*\(", s): return False # not allowed fun(
-    L, R = (p.strip() for p in s.split('='))
-    if not L or not R: return False # something on both sides of equation
+    if s.count("=") != 1:
+        return False  # only one equation sign
+    if re.search(r"[\"'`_<>!^&|:%,$\\\[\]{}]", s):
+        return False  # forbidden chars
+    if not re.fullmatch(r"[A-Za-z0-9+\-*/=().\s]+", s):
+        return False  # allowed chars
+    if re.search(r"[A-Za-z]\s*\.\s*[A-Za-z0-9]", s):
+        return False  # a.b not allowed
+    # if re.search(r"[A-Za-z][A-Za-z0-9]*\s*\(", s): return False # not allowed fun(
+    L, R = (p.strip() for p in s.split("="))
+    if not L or not R:
+        return False  # something on both sides of equation
 
     bal = 0
     for ch in s:  # both brackets present
@@ -80,24 +85,80 @@ def parse_response(response):
 
     return equations
 
-
 def _to_jsonable(value):
-
     try:
-        if isinstance(value, (int, float)):
-            return float(round(value, 5))
+        import sympy as sp
+        import re
 
-        from sympy import N
+        def fmt_complex_raw(rf, if_):
+            sign = "+" if if_ >= 0 else "-"
+            mag = abs(if_)
+            if rf == 0:
+                return f"{'-' if if_ < 0 else ''}{mag} i"
+            return f"{rf} {sign} {mag} i"
 
-        if hasattr(value, "is_number") and bool(value.is_number):
-            n = N(value)
+        def to_sympy(expr):
+            if isinstance(expr, sp.Basic):
+                return expr
+            if isinstance(expr, (int, float, complex)):
+                try:
+                    return sp.nsimplify(expr)
+                except Exception:
+                    if isinstance(expr, complex):
+                        return sp.Float(expr.real) + sp.Float(expr.imag) * sp.I
+                    return sp.Float(expr)
+            if isinstance(expr, str):
+                s = expr.strip()
+
+                if "=" in s:
+                    s = s.split("=", 1)[1].strip()
+
+                if not re.fullmatch(r"[A-Za-z0-9+\-*/().,^ \t\n]*", s):
+                    return None
+                locals_map = {
+                    "I": sp.I, "pi": sp.pi, "E": sp.E,
+                    "sqrt": sp.sqrt, "root": sp.root,
+                    "sin": sp.sin, "cos": sp.cos, "tan": sp.tan,
+                    "cot": sp.cot, "sec": sp.sec, "csc": sp.csc,
+                    "log": sp.log, "exp": sp.exp,
+                }
+                try:
+                    return sp.sympify(s, locals=locals_map, evaluate=True)
+                except Exception:
+                    return None
+            return None
+
+        def num_re_im(sym):
+            n = sp.N(sym)
+            r = sp.re(n)
+            i = sp.im(n)
             try:
-                return float(round(n, 5))
+                rf = float(r)
             except Exception:
-                return str(value)
+                rf = float(r.evalf())
+            try:
+                if_ = float(i)
+            except Exception:
+                if_ = float(i.evalf())
+            return rf, if_
 
         if hasattr(value, "__iter__") and not isinstance(value, (str, bytes)):
             return [_to_jsonable(v) for v in value]
+
+        sym = to_sympy(value)
+        if sym is not None:
+            rf, if_ = num_re_im(sym)
+            if if_ == 0.0:
+                return float(rf)
+            return fmt_complex_raw(rf, if_)
+
+        if isinstance(value, (int, float)):
+            return float(value)
+        if isinstance(value, complex):
+            return fmt_complex_raw(value.real, value.imag)
+        if isinstance(value, str):
+            return value.strip()
+
     except Exception:
         pass
 
@@ -105,18 +166,28 @@ def _to_jsonable(value):
 
 
 def solution_to_json(solution):
-    if solution is None:
+
+    if solution is None or solution == {}:
         return {}
 
-    if isinstance(solution, list) and solution:
-        candidate = solution[0]
-    else:
-        candidate = solution
+    if isinstance(solution, list):
+        if not solution:
+            return {"result": []}
+        if all(isinstance(x, dict) for x in solution):
+            return {
+                "solutions": [
+                    {str(sym): _to_jsonable(val) for sym, val in x.items()}
+                    for x in solution
+                ]
+            }
 
-    if isinstance(candidate, dict):
-        return {str(sym): _to_jsonable(val) for sym, val in candidate.items()}
+        return {"results": [_to_jsonable(x) for x in solution]}
 
-    return {"result": _to_jsonable(candidate)}
+
+    if isinstance(solution, dict):
+        return {str(sym): _to_jsonable(val) for sym, val in solution.items()}
+
+    return {"result": _to_jsonable(solution)}
 
 
 def equations_to_json(equations):

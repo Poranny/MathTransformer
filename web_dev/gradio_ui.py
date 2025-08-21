@@ -15,7 +15,6 @@ HERE = Path(__file__).resolve().parent
 load_dotenv(HERE / ".env", override=False)
 
 API = os.getenv("API_BASE", "http://127.0.0.1:8000")
-WELCOME_FONT = os.getenv("WELCOME_FONT", "Merriweather")
 
 CONTACT_EMAIL = os.getenv("CONTACT_EMAIL", "")
 CONTACT_LINKEDIN = os.getenv("CONTACT_LINKEDIN", "")
@@ -36,6 +35,14 @@ CANDIDATES = [
     HERE / "static" / "og-image-big.png",
     Path("/home/app/static/og-image-big.png"),
 ]
+
+
+TITLE_FONT = os.getenv("TITLE_FONT")
+BODY_FONT = os.getenv("BODY_FONT")
+
+TITLE_FONT_URL = TITLE_FONT.replace(" ", "+")
+BODY_FONT_URL = BODY_FONT.replace(" ", "+")
+
 LOGO_DATA_URL = None
 for cand in CANDIDATES:
     LOGO_DATA_URL = file_to_data_url(cand)
@@ -48,8 +55,12 @@ placeholders = {
     "CONTACT_EMAIL": CONTACT_EMAIL,
     "CONTACT_LINKEDIN": CONTACT_LINKEDIN,
     "CONTACT_GITHUB": CONTACT_GITHUB,
-    "WELCOME_FONT": WELCOME_FONT,
+    "TITLE_FONT": TITLE_FONT,
+    "BODY_FONT": BODY_FONT,
+    "TITLE_FONT_URL": TITLE_FONT_URL,
+    "BODY_FONT_URL": BODY_FONT_URL,
 }
+print(TITLE_FONT, BODY_FONT)
 js_code = read_and_fill(HERE / "app.js", placeholders)
 css_code = read_and_fill(HERE / "styles.css", placeholders)
 
@@ -86,15 +97,15 @@ with gr.Blocks(
             html_attributes={"spellcheck": "false", "autocorrect": "off"},
         )
         btn = gr.Button(
-            "Solve", size="lg", variant="primary", elem_classes=["center-btn"]
+            "Solve", size="lg", variant="primary", elem_classes=["center-btn", "btn-xl"]
         )
 
         with gr.Row(elem_id="mt-row", equal_height=True):
-            out_symbols = gr.HTML(value="", label=None, visible=True)
-            out_equations = gr.HTML(value="", label=None, visible=True)
-            out_solution = gr.HTML(value="", label=None, visible=True)
+            out_symbols = gr.Markdown(value="", label=None, visible=True)
+            out_equations = gr.Markdown(value="", label=None, visible=True)
+            out_solution = gr.Markdown(value="", label=None, visible=True)
 
-        err_box = gr.HTML(
+        err_box = gr.Markdown(
             value="",
             visible=False,
             elem_id="mt-error-box",
