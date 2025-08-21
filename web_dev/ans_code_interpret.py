@@ -31,16 +31,13 @@ _MESSAGES: Dict[str, str] = {
     "NETWORK_ERROR": (
         "MathTransformer is waving from afar but the line broke.\nPlease check your connection and try again."
     ),
-    "TIMEOUT": (
-        "Still calculating... or just daydreaming.\nPlease try again."
-    ),
-    "UNKNOWN_ERROR": (
-        "An unexpected gremlin appeared.\nPlease try again."
-    ),
+    "TIMEOUT": ("Still calculating... or just daydreaming.\nPlease try again."),
+    "UNKNOWN_ERROR": ("An unexpected gremlin appeared.\nPlease try again."),
     "NO_SOLUTION": (
         "I couldn’t find a consistent solution here...\nMaybe the equations don’t quite fit together?"
     ),
 }
+
 
 def nice_message(code: Optional[str]) -> str:
     if code and code in _MESSAGES:

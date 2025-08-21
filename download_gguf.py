@@ -1,12 +1,13 @@
 from pathlib import Path
-import os, shutil
+import os
+import shutil
 from dotenv import load_dotenv
 from huggingface_hub import hf_hub_download
 
 ENV_SECRET_PATH = Path("/run/secrets/env_file")
 if ENV_SECRET_PATH.exists():
     load_dotenv(ENV_SECRET_PATH, override=False)
-else :
+else:
     load_dotenv(dotenv_path=".env")
     print(os.getenv("MODEL_QUANT"))
 

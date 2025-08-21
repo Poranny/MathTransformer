@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 from gradio_ui_helpers import (
     build_handlers,
     file_to_data_url,
-    read_and_fill, instructions_html,
+    read_and_fill,
+    instructions_html,
 )
 
 HERE = Path(__file__).resolve().parent
@@ -22,7 +23,9 @@ CONTACT_GITHUB = os.getenv("CONTACT_GITHUB", "")
 
 PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "https://mathtransformer.app/")
 OG_TITLE = os.getenv("OG_TITLE", "MathTransformer")
-OG_DESC  = os.getenv("OG_DESC", "Solving math equations from natural language descriptions")
+OG_DESC = os.getenv(
+    "OG_DESC", "Solving math equations from natural language descriptions"
+)
 OG_IMAGE = os.getenv("OG_IMAGE", "https://mathtransformer.app/og-image.png")
 
 HEAD_HTML = """
@@ -56,17 +59,17 @@ with gr.Blocks(
     theme=gr.themes.Citrus(
         spacing_size=gr.themes.sizes.spacing_lg,
         radius_size=gr.themes.sizes.text_lg,
-        text_size=gr.themes.sizes.text_lg
+        text_size=gr.themes.sizes.text_lg,
     ),
     title="MathTransformer",
     js=js_code,
     css=css_code,
-    head=HEAD_HTML
+    head=HEAD_HTML,
 ) as demo:
 
     gr.HTML(
         f'<div id="mt_logo_wrap"><a id="mt_logo_btn" href="#" onclick="window.location.reload();return false;" aria-label="Reload"><img src="{LOGO_DATA_URL}" alt="Logo"></a></div>',
-        visible=True
+        visible=True,
     )
 
     with gr.Column(elem_id="centerer", elem_classes=["col-gap"]):
@@ -75,15 +78,16 @@ with gr.Blocks(
             elem_id="mt-instructions",
         )
 
-
         inp = gr.Textbox(
             label="Your equation",
             lines=1,
             placeholder="x minus twenty-one is equal to 0...",
             autofocus=True,
-            html_attributes={"spellcheck": "false", "autocorrect": "off"}
+            html_attributes={"spellcheck": "false", "autocorrect": "off"},
         )
-        btn = gr.Button("Solve", size="lg", variant="primary", elem_classes=["center-btn"])
+        btn = gr.Button(
+            "Solve", size="lg", variant="primary", elem_classes=["center-btn"]
+        )
 
         with gr.Row(elem_id="mt-row", equal_height=True):
             out_symbols = gr.HTML(value="", label=None, visible=True)
@@ -94,19 +98,19 @@ with gr.Blocks(
             value="",
             visible=False,
             elem_id="mt-error-box",
-            elem_classes=["mt-error", "mt-error-rounded"]
+            elem_classes=["mt-error", "mt-error-rounded"],
         )
 
         btn.click(
             start_loading,
             inputs=None,
             outputs=[out_symbols, out_equations, out_solution, err_box],
-            show_progress="hidden"
+            show_progress="hidden",
         ).then(
             handle,
             inputs=inp,
             outputs=[out_symbols, out_equations, out_solution, err_box],
-            show_progress="hidden"
+            show_progress="hidden",
         )
 
 if __name__ == "__main__":
