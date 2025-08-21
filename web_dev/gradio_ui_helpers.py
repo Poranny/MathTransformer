@@ -283,7 +283,6 @@ def instructions_html() -> str:
 
         <p class="mt-info-note">
           Sidenote: Currently supported operations are addition, subtraction, multiplication, division, and exponentiation.
-          You can also use parentheses <code>( )</code>. Constant <code>π</code> is supported.
-          Trigonometric functions (sine, tan, and more) and complex operations are on the way - stay tuned!
+          Trigonometric functions (sine, tan, and more), parentheses and other complex operations are on the way - stay tuned!
         </p>
     """
