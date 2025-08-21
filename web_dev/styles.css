@@ -192,8 +192,8 @@ code, pre, kbd, samp {
 .mt-list { list-style: none; margin: 0; padding: 12px 14px; display: grid; gap: 8px; }
 .mt-list li { display: flex; align-items: center; }
 
-.mt-kv-list { padding: 12px 14px; display: grid; gap: 8px; }
-.mt-kv code { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mt-kv-list { padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; }
+.mt-kv code { white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere; overflow: hidden; text-overflow: ellipsis; }
 
 @keyframes mt-shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 .skeleton .mt-skel-chip, .skeleton .mt-skel-line {
@@ -270,4 +270,82 @@ footer, footer * { display: none !important; }
   font-size: 1.5rem !important;
   font-weight: 525;
   line-height: 1.2;
+}
+
+.mt-subcard.mt-micro {
+  box-sizing: border-box;
+  padding: 3px 3px;
+  border: 1px solid #e7e7e7;
+  border-radius: 10px;
+  background: #fafafa;
+  font-size: 0.97em;
+  margin: 3px 3px;
+}
+
+.mt-subhead {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  padding-left: 2px;
+}
+
+.mt-chip {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 0.88em;
+  line-height: 1;
+  padding: 3px 7px;
+  border-radius: 999px;
+  border: 1px solid #dddddd;
+  background: #f3f3f3;
+}
+
+.mt-kv { margin: 1px 0; }
+
+.mt-subcard.mt-micro code,
+.mt-kv code {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mt-multi-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 6px 2px 2px;
+  padding-bottom: 6px;
+}
+
+.mt-kv--imag {
+  background: #f2f2f2;
+  border-radius: 6px;
+  padding: 2px 6px;
+}
+
+.mt-subcard--complex {
+  background: #f2f2f2;
+  border-color: #e0e0e0;
+}
+
+.mt-badge-complex {
+  margin-left: 6px;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #555;
+}
+
+.mt-list--solutions { padding-left: 0.9rem; }
+.mt-list--solutions > li.mt-li--complex {
+  background: #f2f2f2;
+  border-radius: 8px;
+  padding: 4px 6px;
+  margin: 4px 0;
+}
+.mt-li-chip {
+  display: inline-block;
+  font-weight: 600;
+  margin-right: 6px;
 }
