@@ -77,10 +77,11 @@ def setup_prompt(nl_prompt: str) -> str:
         "   - The named variables start with latin characters only, and might contain digits, e.g. x, y, john, var1, apple, const1b etc.\n"
         "   - The numbers should use '.' for decimal points when necessary\n"
         "   - The only operators allowed are: +, -, *, /, ** and there should be spaces on both sides of each operator\n"
-        "2. If the input describes an inequality (>, <, >=, <=, !=, or their verbal forms), respond ONLY with: INEQUAL_WARNING.\n"
-        "3. If the input does not describe a valid math equation, respond ONLY with: NOTMATH_WARNING.\n"
-        "2. If the input clearly and unambiguously describes an inequality (>, <, >=, <=, !=, or their verbal forms), respond ONLY with: INEQUAL_WARNING. In case of ambiguity, interpret it as a proper equation.\n"
-        "3. If the input clearly and unambiguously does not describe a valid math equation, respond ONLY with: NOTMATH_WARNING.\n"
+       # "   - The prompt might contain simple brackets like ( or ), and they should be kept in your answer\n"
+        "   - The only math functions allowed, and the way they should be included in your answer: n-th root of x - root(x, n), sine of x - sin(x), cosine of x - cos(x), tangens of x - tan(x), cotangens of x - cot(x), secant of x - sec(x), cosecant of x - csc(x),\n"
+        "   - The prompt might contain the following math constants: pi, e \n"
+       # "2. If the input clearly and unambiguously describes an inequality (phrases such as more, less, bigger, smaller, fewer, greater, than, etc.), respond ONLY with: INEQUAL_WARNING. In case of ambiguity, interpret it as a proper equation.\n"
+        "2. If the input clearly and unambiguously does not describe a valid math equation, respond ONLY with: NOTMATH_WARNING.\n"
         "Do not solve the equations. Do not explain anything. Do not output code. Output nothing except what the rules above require."
     )
 
