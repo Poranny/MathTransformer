@@ -49,12 +49,12 @@ code, pre, kbd, samp {
   color: var(--text-color);
 }
 
-#centerer { display: flex; flex-direction: column; justify-content: flex-start; min-height: calc(48vh - var(--hero-h)); gap: 28px; }
+#centerer { display: flex; flex-direction: column; justify-content: flex-start; min-height: calc(28vh - var(--hero-h)); gap: 20px; }
 .col-gap { gap: 48px; }
 .center-btn { display: block; margin: 0 auto; }
 
 #gradio-animation.welcome-text {
-  margin-top: 40px;
+  margin-top: 16px;
   margin-bottom: 0;
   pointer-events: none;
   width: 100%;
@@ -370,3 +370,8 @@ footer, footer * { display: none !important; }
 }
 
 #mt-row { transform-style: flat; }
+
+@media (max-width: 600px) {
+  #gradio-animation.welcome-text { margin-top: 10px; font-size: clamp(26px, 5.2vw, 34px); }
+  #centerer { min-height: 16vh; gap: 16px; }
+}
