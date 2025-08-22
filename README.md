@@ -13,7 +13,7 @@ An app that turns plain English into solvable math. It parses a sentence, deduce
 
 ## Features
 
-- Natural language → equation (via a HuggingFace transformer)
-- Equation → result (via Sympy)
-- Clean JSON output accessible by API
+- Natural language → equation (via a HuggingFace transformer, particularly the Mistral-7B-Instruct-v0.3 model with Q6_K quantization
+- Equation → result (via lots of parsing + Sympy)
+- Clean JSON output accessible by FastAPI
 - Minimal Gradio UI site with a dynamic interface, a custom logo & shareable previews
