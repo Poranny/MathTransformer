@@ -12,7 +12,7 @@ from gradio_ui_helpers import (
 )
 
 HERE = Path(__file__).resolve().parent
-load_dotenv(HERE / ".env", override=False)
+load_dotenv(HERE / ".env_gradio", override=False)
 
 API = os.getenv("API_BASE", "http://127.0.0.1:8000")
 
@@ -101,9 +101,9 @@ with gr.Blocks(
         )
 
         with gr.Row(elem_id="mt-row", equal_height=True):
-            out_symbols = gr.Markdown(value="", label=None, visible=True)
-            out_equations = gr.Markdown(value="", label=None, visible=True)
-            out_solution = gr.Markdown(value="", label=None, visible=True)
+            out_symbols = gr.Markdown(value="", label=None, visible=True, elem_classes=["mt-pane"])
+            out_equations = gr.Markdown(value="", label=None, visible=True, elem_classes=["mt-pane"])
+            out_solution = gr.Markdown(value="", label=None, visible=True, elem_classes=["mt-pane"])
 
         err_box = gr.Markdown(
             value="",

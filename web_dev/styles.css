@@ -8,7 +8,7 @@
   --text-color: #222222;
   --muted: #6b7280;
   --border: #e5e7eb;
-  --shadow: 0 6px 30px rgba(0,0,0,.12);
+  --shadow: 0 6px 15px rgba(0,0,0,.12);
   --surface: #ffffff;
   --background-fill-primary: #faf7f2;
   --overlay-bg: rgba(0,0,0,.35);
@@ -241,7 +241,7 @@ button[aria-live="polite"] span:has(> svg) {
 #mt-instructions .mt-info-icon{ width: 20px; height: 20px; display: inline-block; }
 #mt-instructions ul{ list-style-type: disc; list-style-position: outside; margin: 8px 0 0 0; padding-left: 20px; }
 #mt-instructions li{ margin: 4px 0; }
-#mt-instructions .mt-info-note{ margin: 10px 0 0 0; color: var(--muted); font-size: 0.95rem; }
+#mt-instructions .mt-info-note{ margin: 10px 0 0 0; color: var(--muted); font-size: 0.9rem; }
 
 input, textarea, button, .btn { font-weight: 500; }
 footer, footer * { display: none !important; }
@@ -349,3 +349,24 @@ footer, footer * { display: none !important; }
   font-weight: 600;
   margin-right: 6px;
 }
+
+#mt-row > .mt-pane { overflow: visible !important; }
+#mt-row > .mt-pane .wrap,
+#mt-row > .mt-pane .scroll-hide { overflow: visible !important; }
+#mt-row > .mt-pane .prose {
+  margin: 0 !important;
+  padding: 0 !important;
+  max-width: none !important;
+}
+
+#mt-row .mt-card {
+  position: relative;
+  z-index: 0;
+  box-shadow: var(--shadow) !important;
+}
+
+#mt-row .mt-card:hover {
+  transform: translateY(-1px);
+}
+
+#mt-row { transform-style: flat; }
