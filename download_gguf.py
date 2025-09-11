@@ -9,7 +9,6 @@ if ENV_SECRET_PATH.exists():
     load_dotenv(ENV_SECRET_PATH, override=False)
 else:
     load_dotenv(dotenv_path=".env")
-    print(os.getenv("MODEL_QUANT"))
 
 repo = os.getenv("MODEL_REPO")
 base = os.getenv("MODEL_BASE")

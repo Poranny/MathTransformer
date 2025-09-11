@@ -28,12 +28,14 @@ def explicit_multiply_parser(equation):
 def is_safe_equation(s: str) -> bool:
     if s.count("=") != 1:
         return False  # only one equation sign
-    if re.search(r"[\"'`_<>!^&|:%,$\\\[\]{}]", s):
+    if re.search(r"[\"'`_<>!^&|:%,$@\\\[\]{}]", s):
         return False  # forbidden chars
     if not re.fullmatch(r"[A-Za-z0-9+\-*/=().\s]+", s):
         return False  # allowed chars
     if re.search(r"[A-Za-z]\s*\.\s*[A-Za-z0-9]", s):
         return False  # a.b not allowed
+    if re.search(r"\b(def|class)\b", s):
+        return False # words def or class are not allowed
     # if re.search(r"[A-Za-z][A-Za-z0-9]*\s*\(", s): return False # not allowed fun(
     L, R = (p.strip() for p in s.split("="))
     if not L or not R:
