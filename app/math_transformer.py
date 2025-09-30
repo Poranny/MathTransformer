@@ -6,25 +6,6 @@ from ctransformers import AutoModelForCausalLM
 def setup_generator():
     model_dir = os.getenv("MODEL_DIR")
     model_file = os.getenv("MODEL_FILE")
-    quant = os.getenv("MODEL_QUANT")
-
-    if not model_file:
-        pattern = f"*{quant}*.gguf" if quant else "*.gguf"
-        candidates = sorted(
-            p
-            for p in glob.glob(os.path.join(model_dir, pattern))
-            if quant is None or p.lower().endswith(f"{quant.lower()}.gguf")
-        )
-        if not candidates:
-            files = (
-                ", ".join(sorted(os.listdir(model_dir)))
-                if os.path.isdir(model_dir)
-                else "(no directory)"
-            )
-            raise FileNotFoundError(
-                f"No GGUF for quant='{quant}' in {model_dir}. Available: {files}"
-            )
-        model_file = os.path.basename(candidates[0])
 
     llm = AutoModelForCausalLM.from_pretrained(
         model_dir,
@@ -35,15 +16,7 @@ def setup_generator():
         context_length=int(os.getenv("LLM_CTX", "32768")),
     )
 
-    def infer(prompt: str, max_new_tokens: int = 128, temperature: float = 0.01):
-        return llm(
-            prompt,
-            max_new_tokens=max_new_tokens,
-            temperature=temperature,
-            stop=["</s>"],
-        )
-
-    return infer
+    return llm
 
 
 def build_mistral_prompt(
@@ -80,6 +53,7 @@ def setup_prompt(nl_prompt: str) -> str:
        # "   - The prompt might contain simple brackets like ( or ), and they should be kept in your answer\n"
         "   - The only math functions allowed, and the way they should be included in your answer: n-th root of x - root(x, n), sine of x - sin(x), cosine of x - cos(x), tangens of x - tan(x), cotangens of x - cot(x), secant of x - sec(x), cosecant of x - csc(x),\n"
         "   - The prompt might contain the following math constants: pi, e \n"
+        "   - If the prompt does not contain any variable name, but includes a math expression itself, treat it as if there were a variable result.\n"
        # "2. If the input clearly and unambiguously describes an inequality (phrases such as more, less, bigger, smaller, fewer, greater, than, etc.), respond ONLY with: INEQUAL_WARNING. In case of ambiguity, interpret it as a proper equation.\n"
         "2. If the input clearly and unambiguously does not describe a valid math equation, respond ONLY with: NOTMATH_WARNING.\n"
         "Do not solve the equations. Do not explain anything. Do not output code. Output nothing except what the rules above require."
@@ -101,6 +75,10 @@ def setup_prompt(nl_prompt: str) -> str:
         (
             "This is the equation described in a natural language:\n<<<\nconstant1a is two times more than var1Z\n>>>",
             "'constant1a = 2 * var1Z'",
+        ),
+        (
+            "This is the equation described in a natural language:\n<<<\nfifteen plus 2/3, to the power of 3\n>>>",
+            "'result = (15 + 2/3) ** 3'",
         ),
     ]
 
